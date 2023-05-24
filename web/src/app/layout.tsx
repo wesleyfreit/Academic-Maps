@@ -1,4 +1,6 @@
 import './globals.css';
+import { ReactNode } from 'react';
+
 import { GoogleMaps } from '@/components/GoogleMaps';
 
 import { Bai_Jamjuree as BaiJamjuree, Inter } from 'next/font/google';
@@ -17,19 +19,18 @@ export const metadata = {
     React, Next.js, TailwindCSS e TypeScript..`,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt-br">
       <body
         className={`
-        ${inter.className} 
-        ${baiJamjuree.className} 
+        ${inter.variable} 
+        ${baiJamjuree.variable} 
         bg-gray-900 font-sans 
         text-gray-100
         `}
       >
-        <GoogleMaps />
-        <div>{children}</div>
+        <main>{children}</main>
       </body>
     </html>
   );

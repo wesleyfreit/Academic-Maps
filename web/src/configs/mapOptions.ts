@@ -1,3 +1,5 @@
+const center = { lat: -6.888463202449027, lng: -38.558930105104125 }; // Cajazeiras
+
 const mapOptions = {
   styles: [
     { elementType: 'geometry', stylers: [{ color: '#242f3e' }] },
@@ -81,4 +83,4 @@ const mapOptions = {
   ],
 };
 
-export default mapOptions;
+export {center, mapOptions};
