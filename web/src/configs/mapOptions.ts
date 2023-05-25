@@ -1,3 +1,5 @@
+interface Map {}
+
 const center = { lat: -6.888463202449027, lng: -38.558930105104125 }; // Cajazeiras
 
 const mapOptions = {
@@ -81,6 +83,12 @@ const mapOptions = {
       stylers: [{ color: '#17263c' }],
     },
   ],
+  backgroundColor: '#000',
+  fullscreenControl: false,
+  scaleControl: true,
+  zoomControl: true,
+  mapTypeControl: true,
+  controlSize: 24,
 };
 
-export {center, mapOptions};
+export { center, mapOptions };

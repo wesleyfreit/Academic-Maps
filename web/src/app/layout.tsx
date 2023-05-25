@@ -1,11 +1,13 @@
 import './globals.css';
 import { ReactNode } from 'react';
 
-import { GoogleMaps } from '@/components/GoogleMaps';
+import { Bai_Jamjuree as BaiJamjuree, Roboto_Flex as Roboto } from 'next/font/google';
 
-import { Bai_Jamjuree as BaiJamjuree, Inter } from 'next/font/google';
+const roboto = Roboto({
+  subsets: ['latin'],
+  variable: '--font-roboto-flex',
+});
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const baiJamjuree = BaiJamjuree({
   subsets: ['latin'],
   weight: '700',
@@ -24,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="pt-br">
       <body
         className={`
-        ${inter.variable} 
+        ${roboto.variable} 
         ${baiJamjuree.variable} 
         bg-gray-900 font-sans 
         text-gray-100
