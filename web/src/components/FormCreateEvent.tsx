@@ -19,7 +19,7 @@ export default function WarningCreateEvent(props: Props) {
   return (
     <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl w-screen max-w-lg">
       <h1 className="uppercase font-alt text-xl font-bold">🗺️ Criação do Evento</h1>
-      <form onSubmit={handleCreateLocation} className="mt-5 flex flex-col">
+      <form onSubmit={handleCreateLocation} className="mt-5 flex flex-col overflow-y-auto">
         <input
           type="text"
           id="title"

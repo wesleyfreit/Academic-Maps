@@ -1,8 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api';
 import { center, mapOptions } from '../configs/mapOptions';
-import { useState } from 'react';
 import { BackgroundWindow } from './BackgroundWindow';
 import WarningCreateEvent from './WarningCreateEvent';
 import FormCreateEvent from './FormCreateEvent';
@@ -12,7 +12,7 @@ import ListEvents from './ListEvents';
 export function GoogleMaps() {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: `${process.env.NEXT_PUBLIC_MAP_KEY}`,
+    googleMapsApiKey: `${process.env.NEXT_PUBLIC_MAP_KEY || ''}`,
   }); // Iniciando o GOOGLE MAPS API
 
   const [userPosition, setUserPosition] = useState<google.maps.LatLngLiteral | null>(null); //Localização Real
@@ -45,8 +45,8 @@ export function GoogleMaps() {
           center={userPosition || center}
           onClick={handleMapClick}
         >
-          <ListEvents />
           {/* Lista de Eventos */}
+          <ListEvents />
           <UserLocation selectUserPostion={setUserPosition} /> {/* Localização do usuário */}
           {/* Setando marcador ao mapa, abrindo janela de pergunta sobre criar evento */}
           {clickPosition ? (
