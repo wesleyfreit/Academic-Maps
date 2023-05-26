@@ -1,5 +1,4 @@
 import locationMarkerOptions from '@/configs/MarkerOptions';
-import locationInfoWindowOptions from '@/configs/infoWindowOptions';
 import { InfoWindow, Marker } from '@react-google-maps/api';
 import React, { useEffect, useState } from 'react';
 
@@ -51,7 +50,6 @@ export default function UserLocation(props: Props) {
         <InfoWindow
           position={userPosition}
           onCloseClick={() => setInfoWindowOpen(false)}
-          options={locationInfoWindowOptions}
         >
           <div className="text-black font-sans">Localização atual</div>
         </InfoWindow>

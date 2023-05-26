@@ -1,5 +1,5 @@
 const locationMarkerOptions = {
-    scale: 6,
+    scale: 8,
     fillColor: '#29F',
     fillOpacity: 1,
     strokeColor: 'white',

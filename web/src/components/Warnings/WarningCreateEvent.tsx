@@ -1,26 +1,28 @@
+import { Map } from 'lucide-react';
 import React from 'react';
 
 interface Props {
-  onClose: (value: null) => void;
-  isSelect: (value: google.maps.LatLngLiteral) => void;
-  selectedPosition: google.maps.LatLngLiteral;
+  onClose: (value: boolean) => void;
+  selectIsTrue: (value: boolean) => void;
 }
 
 export default function WarningCreateEvent(props: Props) {
-  const { onClose, isSelect, selectedPosition } = props;
+  const { onClose, selectIsTrue } = props;
 
   function handleClose() {
-    onClose(null);
+    onClose(false);
   }
 
   function handleSelect() {
-    isSelect(selectedPosition);
-    onClose(null);
+    selectIsTrue(true);
+    onClose(true);
   }
 
   return (
     <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl">
-      <h1 className="uppercase font-alt text-lg font-bold">🗺️ Localização Selecionada</h1>
+      <h1 className="uppercase font-alt text-lg font-bold flex justify-center">
+        <Map className="text-green-700 mr-2" /> Localização Selecionada
+      </h1>
       <p className="mt-3">Deseja cadastrar esta localização em um evento?</p>
       <div className="mt-5 w-full h-full flex items-center justify-center space-x-10 ">
         <button
