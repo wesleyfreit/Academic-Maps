@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { List } from 'lucide-react';
 import BackgroundWindow from '../Windows/BackgroundWindow';
 import { api } from '@/lib/api';
 import EventItem from './EventItem';
-import SearchBar from './SearchBar';
+import SearchBar from '../Menu/SearchBar';
 import { Event } from '@/configs/Interfaces';
 
 interface Props {
@@ -11,7 +11,6 @@ interface Props {
 }
 
 const activeSide = `bg-gray-900 w-80 p-2 h-screen fixed duration-700 transform z-10 transition-all shadow-xl shadow-black`;
-
 const normalButton = `bg-gray-500 mt-2 shadow-black shadow-sm ml-2 absolute flex w-12 h-12 hover:bg-gray-400 rounded-lg z-10 cursor-pointer items-center 
   justify-center duration-700 transform transition-all`;
 
@@ -27,12 +26,14 @@ export default function ListEvents(props: Props) {
     else setOpenMenu(true);
   };
 
-  (async () => {
-    if (!eventsList) {
-      const response = await api.get('/events');
-      setEventsList(response.data);
-    }
-  })();
+  useEffect(() => {
+    (async () => {
+      if (!eventsList) {
+        const response = await api.get('/events');
+        setEventsList(response.data);
+      }
+    })();
+  }, []);
 
   return (
     <>
@@ -54,7 +55,14 @@ export default function ListEvents(props: Props) {
               <ul className="flex flex-col pb-3 space-y-5 w-full justify-center">
                 {eventsList &&
                   eventsList.map((event) => {
-                    return <EventItem key={event.id} event={event} onClose={handleOpenList} setCenterWindow={setCenter} />;
+                    return (
+                      <EventItem
+                        key={event.id}
+                        event={event}
+                        onClose={handleOpenList}
+                        setCenterWindow={setCenter}
+                      />
+                    );
                   })}
               </ul>
             )}

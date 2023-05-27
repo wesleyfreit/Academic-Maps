@@ -39,7 +39,7 @@ export default function EventItem(props: Props) {
     <>
       <li className="bg-gray-700 rounded-md px-4 py-1 m-0 flex items-center justify-between hover:bg-gray-600 cursor-pointer">
         <div title="Visualizar evento">
-          <h2 className="flex ">
+          <h2 className="flex font-alt">
             {event.title.length > 20 ? event.title.substring(0, 20).concat('...') : event.title}
           </h2>
           <p>{dayjs(event.startDate).format('DD[/]MM[/]YYYY')}</p>
@@ -57,7 +57,7 @@ export default function EventItem(props: Props) {
             onCloseClick={handleInfoWindow}
             options={{ pixelOffset: new google.maps.Size(0, -30) }}
           >
-            <div className="text-black">{event.title}</div>
+            <div className="text-black font-alt">{event.title}</div>
           </InfoWindow>
         )}
       </li>

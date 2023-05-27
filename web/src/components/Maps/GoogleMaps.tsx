@@ -1,33 +1,38 @@
 'use client';
 
-import { useState } from 'react';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { center, mapOptions } from '../configs/mapOptions';
+import { useEffect, useState } from 'react';
+import { GoogleMap } from '@react-google-maps/api';
 
-import ListEvents from './Menu/EventsList';
-import UserLocation from './Markers/UserLocation';
-import ClickMarker from './Markers/ClickMarker';
+import { center, mapOptions } from '../../configs/mapOptions';
+import ListEvents from '../List/EventsList';
+import UserLocation from '../Markers/UserLocation';
+import ClickMarker from '../Markers/ClickMarker';
+import GoogleMapsLoader from './GoogleMapsLoader';
 import { api } from '@/lib/api';
 
 export function GoogleMaps() {
-  const [mapKey, SetMapKey] = useState('');
+  const [mapKey, setMapKey] = useState('');
+  const [isLoaded, setIsLoaded] = useState(false);
 
-
+  //Obtendo a chave da Api
+  useEffect(() => {
     (async () => {
-      if (mapKey == '') {
-        const response = await api.get('/config');
-        SetMapKey(response.data);
+      if (mapKey === '') {
+        try {
+          const response = await api.get('/config');
+          setMapKey(response.data);
+        } catch (error) {}
       }
     })();
+  }, []);
 
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: `${mapKey}`,
-  }); // Iniciando o GOOGLE MAPS API
+  const handleIsLoaded = () => {
+    setIsLoaded(true);
+  };
 
   const [userPosition, setUserPosition] = useState<google.maps.LatLngLiteral | null>(null); //Localização Real
   const [clickedPosition, setClickPosition] = useState<google.maps.LatLngLiteral | null>(null); //Marcador
-  const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null) // Mudando a posição do centro para o da infoWindow selecionada
+  const [selectedPosition, setSelectedPosition] = useState<google.maps.LatLngLiteral | null>(null); // Mudando a posição do centro para o do marcador selecionado
 
   const handleMapClick = (event: google.maps.MapMouseEvent) => {
     if (event.latLng) {
@@ -38,6 +43,7 @@ export function GoogleMaps() {
 
   return (
     <div className="w-screen h-screen flex">
+      {mapKey !== '' && <GoogleMapsLoader googleMapsApiKey={mapKey} onLoad={handleIsLoaded} />}
       {isLoaded && (
         <GoogleMap // Gerando o mapa
           mapContainerStyle={{ width: '100vw', height: '100vh' }}
