@@ -7,11 +7,22 @@ import { center, mapOptions } from '../configs/mapOptions';
 import ListEvents from './Menu/EventsList';
 import UserLocation from './Markers/UserLocation';
 import ClickMarker from './Markers/ClickMarker';
+import { api } from '@/lib/api';
 
 export function GoogleMaps() {
+  const [mapKey, SetMapKey] = useState('');
+
+
+    (async () => {
+      if (mapKey == '') {
+        const response = await api.get('/config');
+        SetMapKey(response.data);
+      }
+    })();
+
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: `${process.env.NEXT_PUBLIC_MAP_KEY}`,
+    googleMapsApiKey: `${mapKey}`,
   }); // Iniciando o GOOGLE MAPS API
 
   const [userPosition, setUserPosition] = useState<google.maps.LatLngLiteral | null>(null); //Localização Real
