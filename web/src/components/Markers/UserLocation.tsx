@@ -1,6 +1,6 @@
 import locationMarkerOptions from '@/configs/MarkerOptions';
 import { InfoWindow, Marker } from '@react-google-maps/api';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface Props {
   selectUserPostion: (value: google.maps.LatLngLiteral) => void;
@@ -47,10 +47,7 @@ export default function UserLocation(props: Props) {
       )}
       {/* InfoWindow do marcador de localização atual */}
       {infoWindowOpen && userPosition && (
-        <InfoWindow
-          position={userPosition}
-          onCloseClick={() => setInfoWindowOpen(false)}
-        >
+        <InfoWindow position={userPosition} onCloseClick={() => setInfoWindowOpen(false)}>
           <div className="text-black font-sans">Localização atual</div>
         </InfoWindow>
       )}

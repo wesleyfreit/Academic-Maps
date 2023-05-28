@@ -5,12 +5,14 @@ export default function SearchBar() {
   const [pressSearch, setPressSearch] = useState<boolean | null>(null);
 
   const handleKeyPressSearch = (event: KeyboardEvent<HTMLInputElement>) => {
-    if (typeof event == typeof KeyboardEvent) {
-      if (event.key == 'Enter') setPressSearch(true);
-    }
+      if (event.key == 'Enter'){
+        if(pressSearch) setPressSearch(false); 
+        setPressSearch(true);
+      }
   };
 
   const handleClickPressSearch = (event: MouseEvent<HTMLButtonElement>) => {
+    if(pressSearch) setPressSearch(false);
     setPressSearch(true);
   };
 

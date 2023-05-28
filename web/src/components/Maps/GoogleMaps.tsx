@@ -1,34 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { GoogleMap } from '@react-google-maps/api';
 
 import { center, mapOptions } from '../../configs/mapOptions';
+import GoogleMapsLoader from '@/lib/auth';
 import ListEvents from '../List/EventsList';
 import UserLocation from '../Markers/UserLocation';
 import ClickMarker from '../Markers/ClickMarker';
-import GoogleMapsLoader from './GoogleMapsLoader';
-import { api } from '@/lib/api';
 
 export function GoogleMaps() {
-  const [mapKey, setMapKey] = useState('');
-  const [isLoaded, setIsLoaded] = useState(false);
 
-  //Obtendo a chave da Api
-  useEffect(() => {
-    (async () => {
-      if (mapKey === '') {
-        try {
-          const response = await api.get('/config');
-          setMapKey(response.data);
-        } catch (error) {}
-      }
-    })();
-  }, []);
-
-  const handleIsLoaded = () => {
-    setIsLoaded(true);
-  };
+  const isLoaded = GoogleMapsLoader();
 
   const [userPosition, setUserPosition] = useState<google.maps.LatLngLiteral | null>(null); //Localização Real
   const [clickedPosition, setClickPosition] = useState<google.maps.LatLngLiteral | null>(null); //Marcador
@@ -43,7 +26,6 @@ export function GoogleMaps() {
 
   return (
     <div className="w-screen h-screen flex">
-      {mapKey !== '' && <GoogleMapsLoader googleMapsApiKey={mapKey} onLoad={handleIsLoaded} />}
       {isLoaded && (
         <GoogleMap // Gerando o mapa
           mapContainerStyle={{ width: '100vw', height: '100vh' }}
