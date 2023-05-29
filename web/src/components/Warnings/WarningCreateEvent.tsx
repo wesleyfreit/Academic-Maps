@@ -9,17 +9,17 @@ interface Props {
 export default function WarningCreateEvent(props: Props) {
   const { onClose, selectIsTrue } = props;
 
-  function handleClose() {
+  const handleClose = () => {
     onClose(false);
   }
 
-  function handleSelect() {
+  const handleSelect = () => {
     selectIsTrue(true);
     onClose(true);
   }
 
   return (
-    <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl">
+    <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl ">
       <h1 className="uppercase font-alt text-lg font-bold flex justify-center">
         <Map className="text-green-700 mr-2" /> Localização Selecionada
       </h1>

@@ -6,12 +6,11 @@ import FormCreateEvent from '../Forms/FormCreateEvent';
 
 interface Props {
   position: google.maps.LatLngLiteral | null;
-  setPosition: (value: null) => void;
   setBackdropOpen: boolean;
 }
 
 export default function ClickMarker(props: Props) {
-  const { position, setBackdropOpen, setPosition } = props;
+  const { position, setBackdropOpen } = props;
 
   const [backdrop, setBackdrop] = useState(setBackdropOpen);
   const [isTrue, setIsTrue] = useState(false);

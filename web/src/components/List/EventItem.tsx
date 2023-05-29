@@ -1,6 +1,6 @@
 import { InfoWindow, Marker } from '@react-google-maps/api';
 import ptBr from 'dayjs/locale/pt-br';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import { ArrowRightFromLine } from 'lucide-react';
 import { Event } from '@/configs/Interfaces';
@@ -8,14 +8,12 @@ import { Event } from '@/configs/Interfaces';
 dayjs.locale(ptBr);
 
 interface Props {
-  setCenterWindow: (value: google.maps.LatLngLiteral | null) => void;
   onClose: () => void;
   event: Event;
 }
 
 export default function EventItem(props: Props) {
-  const { event } = props;
-  const { onClose, setCenterWindow } = props;
+  const { event, onClose } = props;
 
   const Point = {
     lat: event.point.coordinates[1],
@@ -30,7 +28,6 @@ export default function EventItem(props: Props) {
   };
 
   const closeAndView = () => {
-    setCenterWindow(Point)
     handleInfoWindow();
     onClose();
   };
@@ -57,7 +54,7 @@ export default function EventItem(props: Props) {
             onCloseClick={handleInfoWindow}
             options={{ pixelOffset: new google.maps.Size(0, -30) }}
           >
-            <div className="text-black font-alt">{event.title}</div>
+            <div className="text-black">{event.title}</div>
           </InfoWindow>
         )}
       </li>

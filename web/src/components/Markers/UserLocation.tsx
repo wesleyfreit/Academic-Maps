@@ -1,26 +1,22 @@
+'use client';
+
 import locationMarkerOptions from '@/configs/MarkerOptions';
+import { center } from '@/configs/mapOptions';
+import MapCenter from '@/contexts/MapCenter';
 import { InfoWindow, Marker } from '@react-google-maps/api';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
-interface Props {
-  selectUserPostion: (value: google.maps.LatLngLiteral) => void;
-}
-
-export default function UserLocation(props: Props) {
-  const [userPosition, setUserPosition] = useState<google.maps.LatLngLiteral | null>(null); //Localização Real
+export default function UserLocation() {
   const [infoWindowOpen, setInfoWindowOpen] = useState<boolean>(false); //Janela de informação de marcadores
-
-  const { selectUserPostion } = props;
+  const { centerMap, setCenterMap } = useContext(MapCenter);
 
   // Configuração da busca por localização em tempo real
   useEffect(() => {
     if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-
-          setUserPosition({ lat: latitude, lng: longitude });
-          selectUserPostion({ lat: latitude, lng: longitude });
+          setCenterMap({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.log(error);
@@ -30,12 +26,13 @@ export default function UserLocation(props: Props) {
       console.error('Geolocation is not supported by this browser.');
     }
   }, []);
+
   return (
     <div>
       {/* Marcador com a localização do usuário */}
-      {userPosition && (
+      {centerMap != center && (
         <Marker
-          position={userPosition}
+          position={centerMap}
           onClick={() => setInfoWindowOpen(true)}
           options={{
             icon: {
@@ -46,8 +43,8 @@ export default function UserLocation(props: Props) {
         />
       )}
       {/* InfoWindow do marcador de localização atual */}
-      {infoWindowOpen && userPosition && (
-        <InfoWindow position={userPosition} onCloseClick={() => setInfoWindowOpen(false)}>
+      {infoWindowOpen && centerMap && (
+        <InfoWindow position={centerMap} onCloseClick={() => setInfoWindowOpen(false)}>
           <div className="text-black font-sans">Localização atual</div>
         </InfoWindow>
       )}
