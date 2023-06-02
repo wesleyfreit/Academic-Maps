@@ -1,17 +1,5 @@
-import ListEvents from '@/components/List/EventsList';
-import { GoogleMaps } from '@/components/Maps/GoogleMaps';
-import UserLocation from '@/components/Markers/UserLocation';
-import SearchBar from '@/components/Menu/SearchBar';
-import ViewSearchResults from '@/components/Windows/ViewSearchResults';
+import ClickMarker from '@/components/Markers/ClickMarker';
 
-export default function Home() {
-  return (
-    <GoogleMaps>
-      <ListEvents />
-      <ViewSearchResults>
-        <SearchBar />
-      </ViewSearchResults>
-      <UserLocation />
-    </GoogleMaps>
-  );
+export default async function Home() {
+  return <ClickMarker />;
 }

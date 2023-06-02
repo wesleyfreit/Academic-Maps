@@ -1,7 +1,15 @@
 import './globals.css';
 import { ReactNode } from 'react';
-
 import { Bai_Jamjuree as BaiJamjuree, Roboto_Flex as Roboto } from 'next/font/google';
+
+import ClickMarkerProvider from '@/app/providers/ClickMarkerProvider';
+import ViewBackgroundProvider from './providers/ViewBackgroundProvider';
+
+import GoogleMaps from '@/components/Maps/GoogleMaps';
+import ListEvents from '@/components/List/EventsList';
+import ViewSearchResults from '@/components/Windows/ViewSearchResults';
+import SearchBar from '@/components/Menu/SearchBar';
+import UserLocation from '@/components/Markers/UserLocation';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -16,9 +24,7 @@ const baiJamjuree = BaiJamjuree({
 
 export const metadata = {
   title: 'Academic Maps',
-  description: `Um criador de eventos de eventos acadêmicos onde podem ser salvos 
-    localizações, datas e títulos de eventos acadêmicos, neste projeto será utilizado 
-    React, Next.js, TailwindCSS e TypeScript..`,
+  description: `Um criador de eventos de eventos acadêmicos onde podem ser salvos localizações, datas e títulos de eventos acadêmicos, neste projeto será utilizado React, Next.js, TailwindCSS e TypeScript..`,
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -32,7 +38,20 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         text-gray-100
         `}
       >
-        <main>{children}</main>
+        <main>
+          <ViewBackgroundProvider>
+            <ClickMarkerProvider>
+              <GoogleMaps>
+                <ListEvents />
+                <ViewSearchResults>
+                  <SearchBar />
+                </ViewSearchResults>
+                <UserLocation />
+                {children}
+              </GoogleMaps>
+            </ClickMarkerProvider>
+          </ViewBackgroundProvider>
+        </main>
       </body>
     </html>
   );

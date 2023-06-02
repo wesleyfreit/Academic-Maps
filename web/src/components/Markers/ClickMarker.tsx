@@ -1,30 +1,33 @@
+'use client';
+
+import React, { useContext, useState } from 'react';
 import { Marker } from '@react-google-maps/api';
-import { useState } from 'react';
-import BackgroundWindow from '../Windows/BackgroundWindow';
-import WarningCreateEvent from '../Warnings/WarningCreateEvent';
-import FormCreateEvent from '../Forms/FormCreateEvent';
 
-interface Props {
-  position: google.maps.LatLngLiteral | null;
-  setBackdropOpen: boolean;
-}
+import MapClickedPosition from '@/contexts/MapClickedPosition';
+import BackgroundWindow from '@/contexts/BackgroundWindow';
 
-export default function ClickMarker(props: Props) {
-  const { position, setBackdropOpen } = props;
+import ViewWarningCreateEvent from '../Windows/ViewWarningCreateEvent';
 
-  const [backdrop, setBackdrop] = useState(setBackdropOpen);
-  const [isTrue, setIsTrue] = useState(false);
+export default function ClickMarker() {
+  const [openWarning, setOpenWarning] = useState(false);
+  const { mapClickedPosition } = useContext(MapClickedPosition);
+  const { setBackgroundWindow } = useContext(BackgroundWindow);
+
+  const handleOpenWarning = () => {
+    setBackgroundWindow(true);
+    setOpenWarning(true);
+  };
 
   return (
     <>
-      {position && (
-        <Marker position={position} onClick={() => setBackdrop(true)}>
-          {backdrop && (
-            <BackgroundWindow onClose={setBackdrop}>
-              {!isTrue && <WarningCreateEvent onClose={setBackdrop} selectIsTrue={setIsTrue} />}
-              {isTrue && <FormCreateEvent position={position} onClose={setBackdrop} />}
-            </BackgroundWindow>
-          )}
+      {mapClickedPosition && (
+        <Marker
+          position={mapClickedPosition}
+          draggable={true}
+          onLoad={() => setOpenWarning(true)}
+          onClick={handleOpenWarning}
+        >
+          {openWarning && <ViewWarningCreateEvent setOpenWarning={openWarning} />}
         </Marker>
       )}
     </>

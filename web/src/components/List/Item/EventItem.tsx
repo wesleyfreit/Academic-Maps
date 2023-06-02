@@ -1,3 +1,4 @@
+
 import { InfoWindow, Marker } from '@react-google-maps/api';
 import ptBr from 'dayjs/locale/pt-br';
 import { useState } from 'react';
@@ -47,7 +48,7 @@ export default function EventItem(props: Props) {
             onClick={closeAndView}
           />
         </div>
-        <Marker position={Point} onClick={handleInfoWindow} />
+        <Marker position={Point} onClick={handleInfoWindow} title={event.title}/>
         {infoWindowOpen && (
           <InfoWindow
             position={Point}

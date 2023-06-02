@@ -1,14 +1,16 @@
 'use client';
 
-import locationMarkerOptions from '@/configs/MarkerOptions';
-import { center } from '@/configs/mapOptions';
-import MapCenter from '@/contexts/MapCenter';
 import { InfoWindow, Marker } from '@react-google-maps/api';
 import { useContext, useEffect, useState } from 'react';
 
+import UserLocationPoint from '@/contexts/UserLocationPoint';
+
+import locationMarkerOptions from '@/configs/MarkerOptions';
+import { center } from '@/configs/mapOptions';
+
 export default function UserLocation() {
   const [infoWindowOpen, setInfoWindowOpen] = useState<boolean>(false); //Janela de informação de marcadores
-  const { centerMap, setCenterMap } = useContext(MapCenter);
+  const { userLocationPoint, setUserLocationPoint } = useContext(UserLocationPoint);
 
   // Configuração da busca por localização em tempo real
   useEffect(() => {
@@ -16,7 +18,7 @@ export default function UserLocation() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setCenterMap({ lat: latitude, lng: longitude });
+          setUserLocationPoint({ lat: latitude, lng: longitude });
         },
         (error) => {
           console.log(error);
@@ -28,11 +30,11 @@ export default function UserLocation() {
   }, []);
 
   return (
-    <div>
+    <>
       {/* Marcador com a localização do usuário */}
-      {centerMap != center && (
+      {userLocationPoint != center && (
         <Marker
-          position={centerMap}
+          position={userLocationPoint}
           onClick={() => setInfoWindowOpen(true)}
           options={{
             icon: {
@@ -43,11 +45,11 @@ export default function UserLocation() {
         />
       )}
       {/* InfoWindow do marcador de localização atual */}
-      {infoWindowOpen && centerMap && (
-        <InfoWindow position={centerMap} onCloseClick={() => setInfoWindowOpen(false)}>
+      {infoWindowOpen && userLocationPoint && (
+        <InfoWindow position={userLocationPoint} onCloseClick={() => setInfoWindowOpen(false)}>
           <div className="text-black font-sans">Localização atual</div>
         </InfoWindow>
       )}
-    </div>
+    </>
   );
 }
