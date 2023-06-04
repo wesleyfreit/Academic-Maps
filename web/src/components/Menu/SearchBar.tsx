@@ -1,14 +1,20 @@
 'use client';
 
-import Searchbar from '@/contexts/Searchbar';
 import { Search } from 'lucide-react';
-import { useContext } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useContext, useState } from 'react';
+
+import BackgroundWindow from '@/contexts/BackgroundWindow';
 
 export default function SearchBar() {
-  const { searchStatus, setSearchStatus } = useContext(Searchbar);
+  const { setBackgroundWindow } = useContext(BackgroundWindow);
+  const [searchValue, setSearchValue] = useState('');
+  const router = useRouter();
 
-  const search = () => {
-    setSearchStatus({ valueSearch: searchStatus.valueSearch, isSearch: true, searchResults: [] });
+  const handlePressEnter = () => {
+    router.push(`/events/search/?title=${searchValue}`);
+    setBackgroundWindow(true);
   };
 
   return (
@@ -19,25 +25,24 @@ export default function SearchBar() {
       >
         <label htmlFor="search" className="flex justify-center h-fit">
           <input
+            autoComplete="off"
             type="text"
             name="search"
             id="search"
-            value={searchStatus.valueSearch}
             placeholder="Pesquisar evento"
             className="rounded-lg px-3 py-2 pr-12 w-80 outline-none border shadow-black shadow-sm border-transparent bg-slate-700 focus:border-gray-500 text-lg 
             text-gray-100 placeholder:text-gray-400"
-            onChange={(e) =>
-              setSearchStatus({ valueSearch: e.target.value, isSearch: false, searchResults: [] })
-            }
-            onKeyDown={(e) => (e.key == 'Enter' ? search() : null)}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={(e) => e.key == 'Enter'? handlePressEnter(): null}
           />
-          <button
-            className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 rounded-lg relative 
+          <Link
+            className="bg-blue-700 flex items-center border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 rounded-lg relative 
             -ml-10 px-2"
-            onClick={search}
+            href={`/events/search?title=${searchValue}`}
+            onClick={() => setBackgroundWindow(true)}
           >
             <Search />
-          </button>
+          </Link>
         </label>
       </div>
     </>

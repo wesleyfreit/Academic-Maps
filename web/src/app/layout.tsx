@@ -2,14 +2,13 @@ import './globals.css';
 import { ReactNode } from 'react';
 import { Bai_Jamjuree as BaiJamjuree, Roboto_Flex as Roboto } from 'next/font/google';
 
-import ClickMarkerProvider from '@/app/providers/ClickMarkerProvider';
-import ViewBackgroundProvider from './providers/ViewBackgroundProvider';
+import ClickMarkerProvider from '@/providers/ClickMarkerProvider';
+import BackgroundProvider from '../providers/BackgroundProvider';
 
 import GoogleMaps from '@/components/Maps/GoogleMaps';
-import ListEvents from '@/components/List/EventsList';
-import ViewSearchResults from '@/components/Windows/ViewSearchResults';
 import SearchBar from '@/components/Menu/SearchBar';
 import UserLocation from '@/components/Markers/UserLocation';
+import ViewEventsList from '@/components/Windows/List/ViewEventsList';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -39,18 +38,16 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         `}
       >
         <main>
-          <ViewBackgroundProvider>
+          <BackgroundProvider>
             <ClickMarkerProvider>
               <GoogleMaps>
-                <ListEvents />
-                <ViewSearchResults>
-                  <SearchBar />
-                </ViewSearchResults>
+                <ViewEventsList />
+                <SearchBar />
                 <UserLocation />
                 {children}
               </GoogleMaps>
             </ClickMarkerProvider>
-          </ViewBackgroundProvider>
+          </BackgroundProvider>
         </main>
       </body>
     </html>

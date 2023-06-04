@@ -11,12 +11,14 @@ import { Marker } from '@react-google-maps/api';
 
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import { api } from '@/lib/api';
+import MapClickedPosition from '@/contexts/MapClickedPosition';
 
 export default function ViewCreateEvent() {
   const search = useSearchParams();
   const router = useRouter();
 
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
+  const { setMapClickedPosition } = useContext(MapClickedPosition);
 
   const point = {
     lat: search.get('lat') ? parseFloat(search.get('lat')!) : 0,
@@ -44,6 +46,8 @@ export default function ViewCreateEvent() {
         lat: point.lat,
         lng: point.lng,
       });
+      setMapClickedPosition(undefined);
+      setBackgroundWindow(false);
       router.push('/');
     } catch (error) {
       alert('Erro ao salvar o evento, se o erro persistir tente novamente mais tarde');
