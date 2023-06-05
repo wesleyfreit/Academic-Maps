@@ -1,15 +1,19 @@
 import mongoose from "mongoose";
-import connection from "../../database/dabase";
+import connection from "../../database/database";
 
-connection.main().catch((err) => console.log(err));
+connection().catch((err) => console.log(err));
 
 const eventSchema = new mongoose.Schema({
-  titulo: String,
+  title: String,
   startDate: { type: Date, default: Date.now },
   endDate: { type: Date, default: Date.now },
-  descricao: String,
+  description: String,
+  point: {
+    type: { type: String },
+    coordinates: { type: Array },
+  },
 });
 
 const Event = mongoose.model("Event", eventSchema);
 
-export default { Event };
+export default Event;
