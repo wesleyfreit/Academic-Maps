@@ -8,7 +8,7 @@ import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import Link from 'next/link';
-import { useGoogleMap, InfoWindow } from '@react-google-maps/api';
+import { useGoogleMap } from '@react-google-maps/api';
 
 export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
