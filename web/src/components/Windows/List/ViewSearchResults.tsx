@@ -13,7 +13,6 @@ import { api } from '@/lib/api';
 
 export default function ViewSearchResults() {
   const search = useSearchParams();
-  const router = useRouter();
 
   const title = search.get('title');
 
@@ -35,8 +34,8 @@ export default function ViewSearchResults() {
   }, []);
 
   useEffect(() => {
-    !backgroundWindow ? router.push('/') : null;
-  });
+    if(title) setBackgroundWindow(true);
+  }, []);
 
   return (
     <>

@@ -6,16 +6,15 @@ import { useEffect, useState } from 'react';
 
 import { Event } from '@/configs/Interfaces';
 import EventItem from './Item/EventItem';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
-const activeSide = `bg-gray-900 w-80  z-[2] h-screen fixed duration-700 transform transition-all shadow-xl shadow-black`;
-const normalButton = `bg-gray-500 mt-2 z-[2] shadow-black shadow-sm ml-2 absolute flex w-12 h-12 hover:bg-gray-400 rounded-lg cursor-pointer items-center 
+const activeSide = `bg-gray-900 w-80 h-screen fixed duration-700 transform transition-all shadow-xl shadow-black`;
+const normalButton = `bg-gray-500 mt-2 shadow-black shadow-sm ml-2 absolute flex w-12 h-12 hover:bg-gray-400 rounded-lg cursor-pointer items-center 
   justify-center duration-700 transform transition-all`;
 
 export default function ListEvents() {
   const [openMenu, setOpenMenu] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   const [eventsList, setEventsList] = useState<Event[]>([]);
 
@@ -26,6 +25,7 @@ export default function ListEvents() {
       setOpenMenu(true);
     }
   };
+  
   useEffect(() => {
     if (pathname === '/') {
       (async () => {
@@ -61,7 +61,7 @@ export default function ListEvents() {
           }
         />
       </div>
-      <div className={openMenu ? activeSide : `${activeSide} -translate-x-80`}>
+      <div className={openMenu ? `${activeSide} z-[2]` : `${activeSide} -translate-x-80`}>
         <div className="flex h-screen flex-col w-full">
           <div className="overflow-y-auto scroll-px-0 p-2">
             {eventsList.length == 0 ? (
@@ -71,7 +71,14 @@ export default function ListEvents() {
             ) : (
               <ul className="flex flex-col space-y-5 w-full justify-center">
                 {eventsList.map((event) => {
-                  return <EventItem key={event.id} event={event} onClose={handleOpenList} />;
+                  return (
+                    <EventItem
+                      key={event.id}
+                      event={event}
+                      onClose={handleOpenList}
+                      openMenu={openMenu}
+                    />
+                  );
                 })}
               </ul>
             )}

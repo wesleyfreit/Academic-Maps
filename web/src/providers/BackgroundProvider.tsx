@@ -12,7 +12,6 @@ export default function ViewBackgroundProvider({ children }: { children: ReactNo
         {backgroundWindow && (
           <div
             className="w-screen h-screen absolute z-[1] backdrop-blur-[2px] flex justify-center items-center bg-black bg-opacity-30"
-            onClick={() => setBackgroundWindow(false)}
           />
         )}
         <div className="relative">{children}</div>

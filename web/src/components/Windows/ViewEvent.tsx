@@ -4,15 +4,21 @@ import { Event } from '@/configs/Interfaces';
 import { ClipboardType } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
+import Link from 'next/link';
+import { useGoogleMap, InfoWindow } from '@react-google-maps/api';
 
 export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
+
+  const search = useSearchParams();
   const params = useParams();
   const router = useRouter();
+
+  const maps = useGoogleMap();
 
   useEffect(() => {
     if (params.id) {
@@ -27,16 +33,24 @@ export default function ViewEvent() {
     }
   }, [params.id]);
 
-  useEffect(() => {
-    !backgroundWindow ? router.push('/') : null;
-  });
+    const point = {
+      lat: search.get('lat') ? parseFloat(search.get('lat')!) : 0,
+      lng: search.get('lng') ? parseFloat(search.get('lng')!) : 0,
+    };
+
+    useEffect(() => {
+      if (point.lat) {
+        maps!.setCenter(point);
+        maps!.setZoom(15);
+      }
+    }, [point.lat | point.lng]);
 
   return (
     <>
       {backgroundWindow && (
         <div
-          className="z-[2] absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 
-        shadow-lg drop-shadow-2xl w-screen max-w-2xl"
+          className="z-[2] absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] p-10 border-gray-800 border bg-gray-900 text-center rounded-xl 
+          shadow-gray-950 shadow-lg drop-shadow-2xl w-screen max-w-2xl"
         >
           <h1 className="uppercase font-alt text-xl font-bold flex justify-center">
             <ClipboardType className="text-blue-700 mr-2" /> {event?.title}
@@ -64,14 +78,19 @@ export default function ViewEvent() {
               >
                 Editar
               </button>
-              <button
+              <Link
+                href={`/events/${event?.id}/?lat=${event?.point.coordinates[1]}&lng=${event?.point.coordinates[0]}`}
+                onClick={() => setBackgroundWindow(false)}
                 className="bg-green-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-green-800 
               active:border-green-400 rounded-lg relative px-10 py-2 "
               >
                 Ver Mapa
-              </button>
+              </Link>
               <button
-                onClick={() => router.back()}
+                onClick={() => {
+                  router.back();
+                  setBackgroundWindow(false);
+                }}
                 className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 
               active:border-blue-400 rounded-lg relative px-10 py-2 "
               >
