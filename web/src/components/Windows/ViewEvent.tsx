@@ -9,32 +9,16 @@ import { api } from '@/lib/api';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import Link from 'next/link';
 import { useGoogleMap } from '@react-google-maps/api';
-import InfoWindowList from '../Maps/InfoWindowList';
 
 export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   const search = useSearchParams();
   const params = useParams();
   const router = useRouter();
 
   const maps = useGoogleMap();
-
-  const point = {
-    lat: search.get('lat') ? parseFloat(search.get('lat')!) : 0,
-    lng: search.get('lng') ? parseFloat(search.get('lng')!) : 0,
-  };
-
-  const handleInfoWindow = () => {
-    if (infoWindowOpen) {
-      setInfoWindowOpen(false);
-      router.push('/');
-    } else {
-      setInfoWindowOpen(true);
-    }
-  };
 
   useEffect(() => {
     if (params.id) {
@@ -49,21 +33,17 @@ export default function ViewEvent() {
     }
   }, [params.id]);
 
-  useEffect(() => {
-    if (event?.id) {
-      maps!.setCenter({
-        lat: event?.point.coordinates[1],
-        lng: event?.point.coordinates[0],
-      });
-      maps!.setZoom(15);
-    }
-  }, [event?.id]);
+    const point = {
+      lat: search.get('lat') ? parseFloat(search.get('lat')!) : 0,
+      lng: search.get('lng') ? parseFloat(search.get('lng')!) : 0,
+    };
 
-  useEffect(() => {
-    if (point.lat) {
-      handleInfoWindow();
-    }
-  }, [point.lat | point.lng]);
+    useEffect(() => {
+      if (point.lat) {
+        maps!.setCenter(point);
+        maps!.setZoom(15);
+      }
+    }, [point.lat | point.lng]);
 
   return (
     <>
@@ -120,12 +100,6 @@ export default function ViewEvent() {
           </div>
         </div>
       )}
-      <InfoWindowList
-        point={point}
-        title={event?.title as string}
-        handleInfoWindow={handleInfoWindow}
-        infoWindowOpen={infoWindowOpen}
-      />
     </>
   );
 }

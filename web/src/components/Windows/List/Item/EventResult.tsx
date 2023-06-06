@@ -1,14 +1,19 @@
-import { useRouter } from 'next/navigation';
-import dayjs from 'dayjs';
 import { Event } from '@/configs/Interfaces';
+import dayjs from 'dayjs';
+import { useRouter } from 'next/navigation';
 
-export default function EventResult(props:{event: Event}) {
+
+interface Props {
+  event: Event;
+}
+
+export default function EventResult(props: Props) {
   const router = useRouter();
   const { event } = props;
 
   const handleClickEvent = () => {
     router.push(`/events/${event.id}`);
-  };
+  }
 
   return (
     <>
