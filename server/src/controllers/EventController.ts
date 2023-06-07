@@ -1,4 +1,4 @@
-import { Request, Response, Router } from "express";
+import { Request, Response } from "express";
 import Event from "../models/Event";
 
 type iEvent = {
@@ -11,7 +11,7 @@ type iEvent = {
 };
 
 export class EventController {
-  public async save(req: Request, res: Response) {
+  public async saveEvent(req: Request, res: Response) {
     const body = <iEvent>req.body;
     if (body.title != "" && body.lat != null && body.lng != null) {
       return res.status(400).json({ status: "invalid arguments" });
@@ -24,8 +24,9 @@ export class EventController {
     }
   }
 
-  public async list(req: Request, res: Response) {
+  public async listEvents(req: Request, res: Response) {
     Event.find({}, { _id: true, __v: false })
+      .sort({ startDate: -1 })
       .then((result) => {
         res.status(200).send(result);
       })
@@ -43,7 +44,7 @@ export class EventController {
       .catch((err) => res.status(400).send(err));
   }
 
-  public async update(req: Request, res: Response) {
+  public async updateEvent(req: Request, res: Response) {
     const body = <iEvent>req.body;
     if (body.title != "" && body.lat != null && body.lng != null) {
       return res.status(400).json({ status: "invalid arguments" });
@@ -56,7 +57,16 @@ export class EventController {
             res.status(200).send("Updated");
           }
         })
-        .catch((e) => res.status(404).send("Not found"));
+        .catch((e) => res.status(404).send("Event not found"));
     }
+  }
+
+  public async deleteEvent(req: Request, res: Response) {
+    Event.deleteOne({ _id: req.params.id })
+      .then((result) => {
+        if (result.deletedCount > 0) res.status(200).send("Deleted");
+        else res.status(404).send("Event not found");
+      })
+      .catch((err) => res.status(400).send(err));
   }
 }
