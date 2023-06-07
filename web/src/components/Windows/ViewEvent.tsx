@@ -50,14 +50,14 @@ export default function ViewEvent() {
   }, [params.id]);
 
   useEffect(() => {
-    if (event?.id) {
+    if (event?._id) {
       maps!.setCenter({
         lat: event?.point.coordinates[1],
         lng: event?.point.coordinates[0],
       });
       maps!.setZoom(15);
     }
-  }, [event?.id]);
+  }, [event?._id]);
 
   useEffect(() => {
     if (point.lat) {
@@ -99,7 +99,7 @@ export default function ViewEvent() {
                 Editar
               </button>
               <Link
-                href={`/events/${event?.id}/?lat=${event?.point.coordinates[1]}&lng=${event?.point.coordinates[0]}`}
+                href={`/events/${event?._id}/?lat=${event?.point.coordinates[1]}&lng=${event?.point.coordinates[0]}`}
                 onClick={() => setBackgroundWindow(false)}
                 className="bg-green-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-green-800 
               active:border-green-400 rounded-lg relative px-10 py-2 "

@@ -8,7 +8,7 @@ export default function EventResult(props: { event: Event }) {
   const { event } = props;
 
   const handleClickEvent = () => {
-    router.push(`/events/${event.id}`);
+    router.push(`/events/${event._id}`);
   };
 
   return (

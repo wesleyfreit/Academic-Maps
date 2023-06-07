@@ -29,11 +29,11 @@ export default function EventItem(props: Props) {
   const closeAndViewEvent = () => {
     setBackgroundWindow(true);
     if (openMenu) onClose();
-    router.push(`/events/${event?.id}`);
+    router.push(`/events/${event?._id}`);
   };
 
   const viewPoint = () => {
-    router.push(`/events/${event?.id}/?lat=${point.lat}&lng=${point.lng}`);
+    router.push(`/events/${event?._id}/?lat=${point.lat}&lng=${point.lng}`);
   };
 
   return (

@@ -13,7 +13,7 @@ export default function SearchBar() {
   const router = useRouter();
 
   const handlePressEnter = () => {
-    router.push(`/events/search/?title=${searchValue}`);
+    router.push(`/events/search/?value=${searchValue}`);
     setBackgroundWindow(true);
   };
 

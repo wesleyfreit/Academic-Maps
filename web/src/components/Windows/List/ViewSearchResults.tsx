@@ -52,7 +52,7 @@ export default function ViewSearchResults() {
             <ul className="flex flex-col py-3 px-2 space-y-3 w-full justify-center">
               {searchResults.length != 0 ? (
                 searchResults.map((event) => {
-                  return <EventResult key={event.id} event={event} />;
+                  return <EventResult key={event._id} event={event} />;
                 })
               ) : (
                 <li className="text-gray-300">Sem resultados encontrados</li>

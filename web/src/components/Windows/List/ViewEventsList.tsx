@@ -73,7 +73,7 @@ export default function ListEvents() {
                 {eventsList.map((event) => {
                   return (
                     <EventItem
-                      key={event.id}
+                      key={event._id}
                       event={event}
                       onClose={handleOpenList}
                       openMenu={openMenu}

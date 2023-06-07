@@ -1,6 +1,6 @@
 'use client';
 
-import { InfoWindow, Marker } from '@react-google-maps/api';
+import { InfoWindow, Marker, useGoogleMap } from '@react-google-maps/api';
 import { useContext, useEffect, useState } from 'react';
 
 import UserLocationPoint from '@/contexts/UserLocationPoint';
@@ -11,6 +11,14 @@ import { center } from '@/configs/mapOptions';
 export default function UserLocation() {
   const [infoWindowOpen, setInfoWindowOpen] = useState<boolean>(false); //Janela de informação de marcadores
   const { userLocationPoint, setUserLocationPoint } = useContext(UserLocationPoint);
+
+  const maps = useGoogleMap();
+
+  const handleUserLocationPoint = () => {
+    maps!.setCenter(userLocationPoint);
+    maps!.setZoom(18);
+    setInfoWindowOpen(true);
+  };
 
   // Configuração da busca por localização em tempo real
   useEffect(() => {
@@ -35,7 +43,7 @@ export default function UserLocation() {
       {userLocationPoint != center && (
         <Marker
           position={userLocationPoint}
-          onClick={() => setInfoWindowOpen(true)}
+          onClick={handleUserLocationPoint}
           options={{
             icon: {
               path: google.maps.SymbolPath.CIRCLE,
