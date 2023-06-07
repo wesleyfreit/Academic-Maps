@@ -1,6 +1,6 @@
-import { InfoWindow, Marker } from '@react-google-maps/api';
+import { Marker } from '@react-google-maps/api';
 import ptBr from 'dayjs/locale/pt-br';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import dayjs from 'dayjs';
 import { ArrowRightFromLine } from 'lucide-react';
 import { Event } from '@/configs/Interfaces';
@@ -18,11 +18,10 @@ interface Props {
 export default function EventItem(props: Props) {
   const { event, onClose, openMenu } = props;
   const { setBackgroundWindow } = useContext(BackgroundWindow);
-  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   const router = useRouter();
 
-  const Point = {
+  const point = {
     lat: event.point.coordinates[1],
     lng: event.point.coordinates[0],
   };
@@ -30,16 +29,11 @@ export default function EventItem(props: Props) {
   const closeAndViewEvent = () => {
     setBackgroundWindow(true);
     if (openMenu) onClose();
-    handleInfoWindow();
     router.push(`/events/${event?.id}`);
-    router.push(`/events/${event?.id}/?lat=${Point.lat}&lng=${Point.lng}`);
   };
 
-  const handleInfoWindow = () => {
-    if (infoWindowOpen) {
-      setInfoWindowOpen(false);
-      router.push('/')
-    } else setInfoWindowOpen(true);
+  const viewPoint = () => {
+    router.push(`/events/${event?.id}/?lat=${point.lat}&lng=${point.lng}`);
   };
 
   return (
@@ -57,17 +51,7 @@ export default function EventItem(props: Props) {
         <div title="Visualizar ponto">
           <ArrowRightFromLine className="ml-3 bg-gray-800 rounded-full p-2 h-8 w-12 hover:bg-gray-900" />
         </div>
-        <Marker position={Point} onClick={closeAndViewEvent} title={event.title} />
-        {infoWindowOpen && (
-          <InfoWindow
-            key={`${Point.lat}-${Point.lng}`}
-            position={Point}
-            onCloseClick={handleInfoWindow}
-            options={{ pixelOffset: new google.maps.Size(0, -30) }}
-          >
-            <div className="text-black">{event.title}</div>
-          </InfoWindow>
-        )}
+        <Marker position={point} onClick={viewPoint} title={event.title} />
       </li>
     </>
   );
