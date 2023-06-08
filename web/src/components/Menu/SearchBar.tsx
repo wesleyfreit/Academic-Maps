@@ -38,7 +38,7 @@ export default function SearchBar() {
           <Link
             className="bg-blue-700 flex items-center border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 rounded-lg relative 
             -ml-10 px-2"
-            href={`/events/search?title=${searchValue}`}
+            href={`/events/search?value=${searchValue}`}
             onClick={() => setBackgroundWindow(true)}
           >
             <Search />

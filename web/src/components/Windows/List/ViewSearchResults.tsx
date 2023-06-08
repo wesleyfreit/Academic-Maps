@@ -1,7 +1,7 @@
 'use client';
 
 import { useContext, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
 import { FileSearch } from 'lucide-react';
@@ -14,7 +14,7 @@ import { api } from '@/lib/api';
 export default function ViewSearchResults() {
   const search = useSearchParams();
 
-  const title = search.get('title');
+  const title = search.get('value');
 
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
   const [searchResults, setSearchResults] = useState<Event[]>([]);
@@ -23,7 +23,7 @@ export default function ViewSearchResults() {
     if (title) {
       (async () => {
         try {
-          const response = await api.get(`/events/?title=${title}`);
+          const response = await api.get(`/events/?value=${title}`);
           setSearchResults(response.data);
         } catch (error) {
           alert('Erro ao fazer a busca, se o erro persistir tente novamente mais tarde.');
