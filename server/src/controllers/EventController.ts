@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Event from "../models/Event";
+import Redis from "../../database/redis";
 
 type iEvent = {
   title: string;
@@ -33,12 +34,20 @@ export class EventController {
     const { value } = req.query;
     try {
       if (value) {
+        const redisConsult = await Redis.get(value as string);
+
+        if (redisConsult) return res.json(JSON.parse(redisConsult));
+
         const events = await Event.find(
           { $text: { $search: `%${value}%` } },
           { _id: true, __v: false }
         );
-        if (events.length > 0) return res.json(events);
-        else return res.sendStatus(204);
+        if (events.length > 0) {
+          await Redis.set(value as string, JSON.stringify(events), {
+            EX: 3600,
+          });
+          return res.json(events);
+        } else return res.sendStatus(204);
       }
       const events = await Event.find({}, { _id: true, __v: false }).sort({
         startDate: -1,
@@ -53,9 +62,13 @@ export class EventController {
   public async findEvent(req: Request, res: Response) {
     const id = req.params.id;
     try {
+      const redisConsult = await Redis.get(id);
+      if (redisConsult) return res.json(JSON.parse(redisConsult));
       const event = await Event.findById(id);
-      if (event) return res.json(event);
-      else return res.sendStatus(204);
+      if (event) {
+        await Redis.set(id, JSON.stringify(event), { EX: 3600 });
+        return res.json(event);
+      } else return res.sendStatus(204);
     } catch (error) {
       return res.sendStatus(500);
     }

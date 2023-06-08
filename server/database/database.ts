@@ -8,9 +8,7 @@ main().catch((err) => console.log(err));
 
 async function main() {
   await mongoose.connect(mongoDBUri);
-  // await mongoose.connect(`mongodb://127.0.0.1:27017/EventLocation`);
-
-  console.log("Database Connected");
+  //em caso de uso do docker subistituir por await mongoose.connect(`mongodb://127.0.0.1:27017/EventLocation`);
 }
 
 export default mongoose;
