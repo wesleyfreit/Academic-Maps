@@ -3,19 +3,15 @@ import cors from "cors";
 import dotenv from "dotenv";
 import router from "./routes";
 
-const server = express();
-const host = 8080;
-
 dotenv.config();
+
+const server = express();
+const port = process.env.PORT || 8080;
 
 server.use(express.json());
 server.use(cors());
 server.use(router);
 
-// server.get("/config", (req, res) => {
-//   res.json(process.env.MAP_KEY);
-// });
-
-server.listen(host, () => {
-  console.log(`Server is running in http://localhost:${host}`);
+server.listen(port, () => {
+  console.log(`Server is running in http://localhost:${port}`);
 });

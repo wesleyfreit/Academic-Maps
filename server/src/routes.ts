@@ -6,8 +6,8 @@ const router = Router();
 const eventController = new EventController();
 
 router.get("/events", eventController.listEvents);
-router.get("/events/:content", eventController.searchByContent);
-router.post("/event", eventController.saveEvent);
+router.get("/events/:content", eventController.findEvent);
+router.post("/events", eventController.saveEvent);
 router.put("/events/:id", eventController.updateEvent);
 router.delete("/events/:id", eventController.deleteEvent);
 
