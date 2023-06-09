@@ -9,7 +9,7 @@ const server = express();
 const port = process.env.PORT || 8080;
 
 server.use(express.json());
-server.use(cors());
+server.use(cors({origin: process.env.URL_PERM})); 
 server.use(router);
 
 server.listen(port, () => {
