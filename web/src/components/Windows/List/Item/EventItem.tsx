@@ -51,7 +51,7 @@ export default function EventItem(props: Props) {
         <div title="Visualizar ponto">
           <ArrowRightFromLine className="ml-3 bg-gray-800 rounded-full p-2 h-8 w-12 hover:bg-gray-900" />
         </div>
-        <Marker position={point} onClick={viewPoint} title={event.title} />
+        <Marker label={event.title.substring(0, 3)} position={point} onClick={viewPoint} title={event.title} />
       </li>
     </>
   );

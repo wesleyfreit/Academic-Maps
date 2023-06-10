@@ -10,7 +10,7 @@ import ViewWarningCreateEvent from '../Windows/ViewWarningCreateEvent';
 
 export default function ClickMarker() {
   const [openWarning, setOpenWarning] = useState(false);
-  const { mapClickedPosition } = useContext(MapClickedPosition);
+  const { mapClickedPosition, setMapClickedPosition } = useContext(MapClickedPosition);
   const { setBackgroundWindow } = useContext(BackgroundWindow);
 
   const handleOpenWarning = () => {
@@ -24,6 +24,11 @@ export default function ClickMarker() {
         <Marker
           position={mapClickedPosition}
           draggable={true}
+          onDragEnd={(e) =>
+            setMapClickedPosition(
+              e.latLng ? { lat: e.latLng.lat(), lng: e.latLng.lng() } : undefined,
+            )
+          }
           onLoad={() => setOpenWarning(true)}
           onClick={handleOpenWarning}
         >

@@ -10,11 +10,13 @@ import BackgroundWindow from '@/contexts/BackgroundWindow';
 import Link from 'next/link';
 import { useGoogleMap } from '@react-google-maps/api';
 import InfoWindowList from '../Maps/InfoWindowList';
+import MapClickedPosition from '@/contexts/MapClickedPosition';
 
 export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
+  const { setMapClickedPosition } = useContext(MapClickedPosition);
 
   const search = useSearchParams();
   const params = useParams();
@@ -41,7 +43,10 @@ export default function ViewEvent() {
       (async () => {
         try {
           const response = await api.get(`/events/${params.id}`);
-          setEvent(response.data);
+          if (response) {
+            setEvent(response.data);
+            setBackgroundWindow(true);
+          }
         } catch (error) {
           router.push('/');
         }
@@ -52,8 +57,8 @@ export default function ViewEvent() {
   useEffect(() => {
     if (event?._id) {
       maps!.setCenter({
-        lat: event?.point.coordinates[1],
-        lng: event?.point.coordinates[0],
+        lat: event.point.coordinates[1],
+        lng: event.point.coordinates[0],
       });
       maps!.setZoom(15);
     }
@@ -82,25 +87,31 @@ export default function ViewEvent() {
               <p>~</p>
               <p>{`${dayjs(event?.endDate).format('DD[/]MM[/]YYYY')}`}</p>
             </div>
-            <div className="mt-3 h-96 overflow-y-auto">
+            <div className="mt-3 h-96 overflow-y-auto max-w-xl">
               <p>{`${event?.description}`}</p>
             </div>
             <div className="mt-5 flex justify-center space-x-3">
-              <button
+              <Link
+                href={`/events/remove/${event?._id}`}
                 className="bg-red-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-red-800 
               active:border-red-400 rounded-lg relative px-10 py-2 "
               >
-                Deletar
-              </button>
-              <button
+                Remover
+              </Link>
+              <Link
+                href={`/events/update/${event?._id}`}
+                onClick={() => setMapClickedPosition(undefined)}
                 className="bg-yellow-600 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-yellow-700 
               active:border-yellow-400 rounded-lg relative px-10 py-2"
               >
                 Editar
-              </button>
+              </Link>
               <Link
                 href={`/events/${event?._id}/?lat=${event?.point.coordinates[1]}&lng=${event?.point.coordinates[0]}`}
-                onClick={() => setBackgroundWindow(false)}
+                onClick={() => {
+                  setBackgroundWindow(false);
+                  setMapClickedPosition(undefined);
+                }}
                 className="bg-green-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-green-800 
               active:border-green-400 rounded-lg relative px-10 py-2 "
               >
@@ -112,7 +123,7 @@ export default function ViewEvent() {
                   setBackgroundWindow(false);
                 }}
                 className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 
-              active:border-blue-400 rounded-lg relative px-10 py-2 "
+              active:border-blue-400 rounded-lg relative px-10 py-2"
               >
                 Voltar
               </button>

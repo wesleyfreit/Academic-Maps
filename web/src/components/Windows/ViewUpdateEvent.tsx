@@ -1,76 +1,99 @@
 'use client';
 
 import { FormEvent, useContext, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 
 import Datepicker from 'react-tailwindcss-datepicker';
 import { DateValueType } from 'react-tailwindcss-datepicker/dist/types';
-import { ClipboardType } from 'lucide-react';
-import { Marker } from '@react-google-maps/api';
+import { ClipboardType, PenLine } from 'lucide-react';
+import { Marker, useGoogleMap } from '@react-google-maps/api';
 
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import { api } from '@/lib/api';
 import MapClickedPosition from '@/contexts/MapClickedPosition';
+import { Event } from '@/configs/Interfaces';
 
 export default function ViewCreateEvent() {
-  const search = useSearchParams();
-  const router = useRouter();
-
+  const [event, setEvent] = useState<Event>();
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
-  const { setMapClickedPosition } = useContext(MapClickedPosition);
+  const { mapClickedPosition, setMapClickedPosition } = useContext(MapClickedPosition);
   const [date, setChange] = useState<DateValueType | null>(null);
   const [isRequired, setIsRequired] = useState(false);
 
-  const point = {
-    lat: search.get('lat') ? parseFloat(search.get('lat')!) : 0,
-    lng: search.get('lng') ? parseFloat(search.get('lng')!) : 0,
-  };
+  const router = useRouter();
+  const params = useParams();
+
+  const maps = useGoogleMap();
 
   useEffect(() => {
-    !backgroundWindow ? router.push('/') : null;
-  });
+    if (params.id) {
+      (async () => {
+        try {
+          const response = await api.get(`/events/${params.id}`);
+          setEvent(response.data);
+        } catch (error) {
+          alert('Erro ao consultar o servidor');
+          router.push('/');
+        }
+      })();
+    }
+  }, [params.id]);
+
+  useEffect(() => {
+    if (event?._id) {
+      setChange({ startDate: event.startDate, endDate: event.endDate });
+      setMapClickedPosition({ lat: event.point.coordinates[1], lng: event.point.coordinates[0] });
+      maps!.setCenter({
+        lat: event.point.coordinates[1],
+        lng: event.point.coordinates[0],
+      });
+      maps!.setZoom(15);
+    }
+  }, [event?._id]);
 
   const handleDateChange = (newDate: DateValueType) => setChange(newDate);
 
-  const handleCreateLocation = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+  const handleUpdateLocation = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
 
-    if (formData.get('title') && date?.startDate && date.endDate && point.lat && point.lng) {
+    if (formData.get('title') && date?.startDate && event?._id && mapClickedPosition?.lat) {
       try {
-        await api.post('/events', {
+        await api.put(`/events/${event._id}`, {
           title: formData.get('title'),
           startDate: date.startDate,
           endDate: date.endDate,
           description: formData.get('description'),
           point: {
             type: 'Point',
-            coordinates: [point.lng, point.lat],
+            coordinates: [mapClickedPosition.lng, mapClickedPosition.lat],
           },
         });
+        alert('Evento atualizado com sucesso.');
         setMapClickedPosition(undefined);
         setBackgroundWindow(false);
         router.push('/');
       } catch (error) {
-        alert('Erro ao salvar o evento, se o erro persistir tente novamente mais tarde');
+        alert('Erro ao atualizar o evento, se o erro persistir tente novamente mais tarde.');
       }
     } else return setIsRequired(true);
   };
 
   return (
     <>
-      {backgroundWindow && (
+      {backgroundWindow && event?._id && (
         <div className="z-[2] relative w-fit left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%]">
-          <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl w-screen max-w-lg">
+          <div className="flex flex-col p-10 border-gray-800 border bg-gray-900 text-center rounded-xl shadow-gray-950 shadow-lg drop-shadow-2xl ">
             <h1 className="uppercase font-alt text-xl font-bold flex justify-center">
-              <ClipboardType className="mr-2 text-blue-700" /> Criação do Evento
+              <PenLine className="mr-2 text-yellow-500" /> Edição do Evento
             </h1>
-            <form onSubmit={handleCreateLocation} className="mt-5 flex flex-col">
+            <form onSubmit={handleUpdateLocation} className="mt-5 flex flex-col">
               <input
                 type="text"
                 id="title"
                 name="title"
+                defaultValue={event.title}
                 placeholder="Título*"
                 className="rounded-lg px-3 py-2 outline-none border border-transparent bg-slate-800 focus:border-gray-700 text-lg text-gray-100 placeholder:text-gray-400"
               />
@@ -91,6 +114,7 @@ export default function ViewCreateEvent() {
                 name="description"
                 id="description"
                 spellCheck={false}
+                defaultValue={event.description.toString()}
                 className="rounded-lg px-3 py-2 outline-none border border-transparent bg-slate-800 focus:border-gray-700 text-lg text-gray-100 
                          placeholder:text-gray-400 mt-5 resize-none h-52"
                 placeholder="Adicione uma breve descrição do evento"
@@ -99,28 +123,48 @@ export default function ViewCreateEvent() {
                 <p className=" self-start text-red-500">Os campos com * são obrigatórios.</p>
               )}
               <div className="mt-5 w-full h-full flex justify-center space-x-3">
-                <Link
-                  href="/"
-                  className="bg-red-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-red-800 active:border-red-400 rounded-lg 
-                  relative px-7 py-2"
-                  onClick={() => {
-                    setBackgroundWindow(false);
-                  }}
+                <button
+                  type="button"
+                  className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 
+              active:border-blue-400 rounded-lg relative px-10 py-2"
+                  onClick={() => router.back()}
                 >
-                  Cancelar
-                </Link>
+                  Voltar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setBackgroundWindow(false)}
+                  className="bg-green-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-green-800 
+              active:border-green-400 rounded-lg relative px-10 py-2 "
+                >
+                  Alterar Ponto
+                </button>
                 <button
                   type="submit"
-                  className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 
-                  rounded-lg relative px-10 py-2 "
+                  className="bg-yellow-600 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-yellow-700 
+              active:border-yellow-400 rounded-lg relative px-10 py-2"
                 >
-                  Salvar
+                  Atualizar
                 </button>
               </div>
             </form>
           </div>
-          {point && <Marker position={point} title="Posição selecionada" clickable={false} />}
         </div>
+      )}
+      {mapClickedPosition && (
+        <Marker
+          position={mapClickedPosition}
+          draggable={true}
+          label={'UP'}
+          onDragEnd={(e) => {
+            setMapClickedPosition(
+              e.latLng ? { lat: e.latLng.lat(), lng: e.latLng.lng() } : undefined,
+            );
+            setBackgroundWindow(true);
+          }}
+          onLoad={() => setBackgroundWindow(true)}
+          onClick={() => setBackgroundWindow(true)}
+        />
       )}
     </>
   );

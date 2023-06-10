@@ -49,6 +49,7 @@ export default function ViewCreateEvent() {
             coordinates: [point.lng, point.lat],
           },
         });
+        alert('Evento salvo com sucesso.');
         setMapClickedPosition(undefined);
         setBackgroundWindow(false);
         router.push('/');
