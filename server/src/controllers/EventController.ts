@@ -19,6 +19,7 @@ export class EventController {
     if (body.title != '' && body.point.coordinates[1] && body.point.coordinates[0]) {
       try {
         await Event.create(body);
+        await Redis.flushAll();
         return res.sendStatus(201);
       } catch (error) {
         return res.sendStatus(400);
@@ -50,8 +51,7 @@ export class EventController {
         if (events.length > 0) {
           await Redis.set(`event-items`, JSON.stringify(events), { EX: 3600 });
           return res.json(events);
-        }
-        else return res.sendStatus(204);
+        } else return res.sendStatus(204);
       }
     } catch (error) {
       return res.sendStatus(404);
@@ -78,14 +78,11 @@ export class EventController {
     const id = req.params.id;
     if (body.title != '' && body.point.coordinates[1] && body.point.coordinates[0]) {
       try {
-        const event = await Event.findById(id);
-        if (event) {
-          const result = await Event.updateOne({ _id: id }, { ...body });
-          if (result) {
-            await Redis.flushAll();
-            return res.sendStatus(200);
-          } else return res.sendStatus(400);
-        } else return res.sendStatus(204);
+        const result = await Event.findOneAndUpdate({ _id: id }, { ...body });
+        if (result) {
+          await Redis.flushAll();
+          return res.sendStatus(200);
+        } else return res.sendStatus(400);
       } catch (error) {
         return res.sendStatus(404);
       }
@@ -95,14 +92,11 @@ export class EventController {
   public async deleteEvent(req: Request, res: Response) {
     const id = req.params.id;
     try {
-      const event = await Event.findById(id);
-      if (event) {
-        const result = await Event.deleteOne({ _id: id });
-        if (result) {
-          await Redis.flushAll();
-          return res.sendStatus(200);
-        } else return res.sendStatus(400);
-      } else return res.sendStatus(204);
+      const result = await Event.findOneAndRemove({ _id: id });
+      if (result) {
+        await Redis.flushAll();
+        return res.sendStatus(200);
+      } else return res.sendStatus(400);
     } catch (error) {
       return res.sendStatus(404);
     }
