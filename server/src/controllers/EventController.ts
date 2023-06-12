@@ -82,7 +82,7 @@ export class EventController {
         if (event) {
           const result = await Event.updateOne({ _id: id }, { ...body });
           if (result) {
-            await Redis.del(id);
+            await Redis.flushAll();
             return res.sendStatus(200);
           } else return res.sendStatus(400);
         } else return res.sendStatus(204);
@@ -99,7 +99,7 @@ export class EventController {
       if (event) {
         const result = await Event.deleteOne({ _id: id });
         if (result) {
-          await Redis.del(id);
+          await Redis.flushAll();
           return res.sendStatus(200);
         } else return res.sendStatus(400);
       } else return res.sendStatus(204);
