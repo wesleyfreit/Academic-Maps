@@ -1,5 +1,7 @@
 ## Getting Started
 
+#### Requisites: Node, NPM, Mongodb local or cloud Redis local or cloud.
+
 1. Install the dependencies in the ./web and ./server directory with:
 ```bash
 npm i
