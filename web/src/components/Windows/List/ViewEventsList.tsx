@@ -69,7 +69,7 @@ export default function ListEvents() {
                 <h1>Sem eventos cadastrados</h1>
               </div>
             ) : (
-              <ul className="flex flex-col space-y-5 w-full justify-center">
+              <ul className="flex flex-col space-y-2 w-full justify-center">
                 {eventsList.map((event) => {
                   return (
                     <EventItem
