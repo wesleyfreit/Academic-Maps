@@ -2,7 +2,6 @@
 
 import { FormEvent, useContext, useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import Link from 'next/link';
 
 import Datepicker from 'react-tailwindcss-datepicker';
 import { DateValueType } from 'react-tailwindcss-datepicker/dist/types';
@@ -18,7 +17,9 @@ export default function ViewCreateEvent() {
   const [event, setEvent] = useState<Event>();
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
   const { mapClickedPosition, setMapClickedPosition } = useContext(MapClickedPosition);
-  const [date, setChange] = useState<DateValueType | null>(null);
+  const [date, setDate] = useState<DateValueType | null>(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [isRequired, setIsRequired] = useState(false);
 
   const router = useRouter();
@@ -42,17 +43,18 @@ export default function ViewCreateEvent() {
 
   useEffect(() => {
     if (event?._id) {
-      setChange({ startDate: event.startDate, endDate: event.endDate });
+      setDate({ startDate: event.startDate, endDate: event.endDate });
       setMapClickedPosition({ lat: event.point.coordinates[1], lng: event.point.coordinates[0] });
       maps!.setCenter({
         lat: event.point.coordinates[1],
         lng: event.point.coordinates[0],
       });
       maps!.setZoom(15);
+
+      setTitle(event.title)
+      setDescription(event.description.toString());
     }
   }, [event?._id]);
-
-  const handleDateChange = (newDate: DateValueType) => setChange(newDate);
 
   const handleUpdateLocation = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -93,7 +95,8 @@ export default function ViewCreateEvent() {
                 type="text"
                 id="title"
                 name="title"
-                defaultValue={event.title}
+                onChange={(e) => setTitle(e.target.value)}
+                defaultValue={title}
                 placeholder="Título*"
                 className="rounded-lg px-3 py-2 outline-none border border-transparent bg-slate-800 focus:border-gray-700 text-lg text-gray-100 placeholder:text-gray-400"
               />
@@ -105,7 +108,7 @@ export default function ViewCreateEvent() {
                   readOnly={true}
                   useRange={false}
                   value={date}
-                  onChange={handleDateChange}
+                  onChange={(newDate) => setDate(newDate)}
                   inputClassName="rounded-lg px-3 py-2 outline-none border border-transparent bg-slate-800 focus:border-gray-700 text-lg text-gray-100 
                   placeholder:text-gray-400 w-full focus:ring-0 "
                 />
@@ -114,7 +117,8 @@ export default function ViewCreateEvent() {
                 name="description"
                 id="description"
                 spellCheck={false}
-                defaultValue={event.description.toString()}
+                defaultValue={description}
+                onChange={(e) => setDescription(e.target.value)}
                 className="rounded-lg px-3 py-2 outline-none border border-transparent bg-slate-800 focus:border-gray-700 text-lg text-gray-100 
                          placeholder:text-gray-400 mt-5 resize-none h-52"
                 placeholder="Adicione uma breve descrição do evento"

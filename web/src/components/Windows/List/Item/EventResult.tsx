@@ -21,8 +21,8 @@ export default function EventResult(props: { event: Event }) {
         >
           <h2 className="font-alt text-lg font-semibold">{event.title}</h2>
           <p>
-            {dayjs(event.startDate).format('DD[/]MM[/]YYYY')} ~
-            {dayjs(event.endDate).format('DD[/]MM[/]YYYY')}
+            {dayjs(event.startDate).utc().format('DD[/]MM[/]YYYY')} ~
+            {dayjs(event.endDate).utc().format('DD[/]MM[/]YYYY')}
           </p>
         </div>
       </li>

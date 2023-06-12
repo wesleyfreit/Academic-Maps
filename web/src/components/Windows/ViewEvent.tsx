@@ -83,9 +83,9 @@ export default function ViewEvent() {
           <div className="mt-5 flex flex-col overflow-y-auto items-center">
             <div className="flex space-x-2">
               <p className="font-bold">Data:</p>
-              <p>{`${dayjs(event?.startDate).format('DD[/]MM[/]YYYY')}`}</p>
+              <p>{`${dayjs(event?.startDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
               <p>~</p>
-              <p>{`${dayjs(event?.endDate).format('DD[/]MM[/]YYYY')}`}</p>
+              <p>{`${dayjs(event?.endDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
             </div>
             <div className="mt-3 h-96 overflow-y-auto max-w-xl">
               <p>{`${event?.description}`}</p>

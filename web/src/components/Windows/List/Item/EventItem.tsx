@@ -1,13 +1,12 @@
 import { Marker } from '@react-google-maps/api';
-import ptBr from 'dayjs/locale/pt-br';
+import utc from 'dayjs/plugin/utc';
 import { useContext } from 'react';
 import dayjs from 'dayjs';
-import { ArrowRightFromLine } from 'lucide-react';
 import { Event } from '@/configs/Interfaces';
 import { useRouter } from 'next/navigation';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 
-dayjs.locale(ptBr);
+dayjs.extend(utc);
 
 interface Props {
   event: Event;
@@ -44,14 +43,19 @@ export default function EventItem(props: Props) {
       >
         <div title="Visualizar evento">
           <h2 className="flex font-alt">
-            {event.title.length > 20 ? event.title.substring(0, 20).concat('...') : event.title}
+            {event.title}
           </h2>
-          <p>{dayjs(event.startDate).format('DD[/]MM[/]YYYY')}</p>
+          <p>
+            {dayjs(event.startDate).utc().format('DD[/]MM[/]YYYY')} ~
+            {dayjs(event.endDate).utc().format('DD[/]MM[/]YYYY')}
+          </p>
         </div>
-        <div title="Visualizar ponto">
-          <ArrowRightFromLine className="ml-3 bg-gray-800 rounded-full p-2 h-8 w-12 hover:bg-gray-900" />
-        </div>
-        <Marker label={event.title.substring(0, 3)} position={point} onClick={viewPoint} title={event.title} />
+        <Marker
+          label={event.title.substring(0, 2)}
+          position={point}
+          onClick={viewPoint}
+          title={event.title}
+        />
       </li>
     </>
   );
