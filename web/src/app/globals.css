@@ -22,3 +22,14 @@
   border-radius: 20px;
   border: 3px solid rgb(30 41 59);
 }
+
+#user-tab {
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.7s;
+}
+
+#user-button:hover #user-tab {
+  visibility: visible;
+  opacity: 1;
+}

@@ -1,5 +1,5 @@
-import FormCreateEvent from '@/components/Windows/ViewCreateEvent';
+import ViewCreateEvent from '@/components/Windows/ViewCreateEvent';
 
 export default function page() {
-  return <FormCreateEvent />;
+  return <ViewCreateEvent />;
 }

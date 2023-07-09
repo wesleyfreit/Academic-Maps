@@ -33,7 +33,7 @@ export default function SearchBar() {
             className="rounded-lg px-3 py-2 pr-12 w-80 outline-none border shadow-black shadow-sm border-transparent bg-slate-700 focus:border-gray-500 text-lg 
             text-gray-100 placeholder:text-gray-400"
             onChange={(e) => setSearchValue(e.target.value)}
-            onKeyDown={(e) => e.key == 'Enter' ? handlePressEnter(): null}
+            onKeyDown={(e) => (e.key == 'Enter' ? handlePressEnter() : null)}
           />
           <Link
             className="bg-blue-700 flex items-center border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 rounded-lg relative 

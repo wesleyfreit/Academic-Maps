@@ -10,9 +10,7 @@ export default function ViewBackgroundProvider({ children }: { children: ReactNo
     <BackgroundWindow.Provider value={{ backgroundWindow, setBackgroundWindow }}>
       <div className="flex items-center justify-center w-screen h-screen">
         {backgroundWindow && (
-          <div
-            className="w-screen h-screen absolute z-[1] backdrop-blur-[2px] flex justify-center items-center bg-black bg-opacity-30"
-          />
+          <div className="w-screen h-screen absolute z-[1] flex justify-center items-center bg-black bg-opacity-30" />
         )}
         <div className="relative">{children}</div>
       </div>

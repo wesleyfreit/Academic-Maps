@@ -8,7 +8,10 @@ import BackgroundProvider from '../providers/BackgroundProvider';
 import GoogleMaps from '@/components/Maps/GoogleMaps';
 import SearchBar from '@/components/Menu/SearchBar';
 import UserLocation from '@/components/Markers/UserLocation';
-import ViewEventsList from '@/components/Windows/List/ViewEventsList';
+import { cookies } from 'next/headers';
+import Menu from '@/components/Menu/Menu';
+import Profile from '@/components/Menu/Profile';
+import Signin from '@/components/Menu/Signin';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -27,6 +30,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
+  const isAuthenticated = cookies().has('token');
   return (
     <html lang="pt-br">
       <body
@@ -41,8 +45,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <BackgroundProvider>
             <ClickMarkerProvider>
               <GoogleMaps>
-                <ViewEventsList />
                 <SearchBar />
+                {isAuthenticated ? <Profile /> : <Signin />}
+                <Menu />
                 <UserLocation />
                 {children}
               </GoogleMaps>
