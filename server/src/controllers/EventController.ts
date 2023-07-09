@@ -19,11 +19,7 @@ type iEvent = {
 export class EventController {
   public async saveEvent(req: Request, res: Response) {
     const body = <iEvent>req.body;
-    if (
-      body.title != "" &&
-      body.point.coordinates[1] &&
-      body.point.coordinates[0]
-    ) {
+    if (body && body.title != "" && body.point.coordinates[1] && body.point.coordinates[0]) {
       try {
         const event = await Event.create(body);
         await Redis.set(`id-${event.id}`, JSON.stringify(event), { EX: 3600 });

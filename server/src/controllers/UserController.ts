@@ -46,13 +46,7 @@ export class UserController {
         if (user) {
           const check = await bcrypt.compare(password, user.password as string);
           if (check) {
-            const token = jwt.sign(
-              { id: user.id, username: user.username },
-              jwtSecret,
-              {
-                expiresIn: 3600,
-              }
-            );
+            const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret);
             const tokenBearer = `Bearer ${token}`;
             return res.json({ token: tokenBearer });
           } else {
