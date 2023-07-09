@@ -1,10 +1,11 @@
 'use client';
 
 import { Event } from '@/configs/Interfaces';
-import { ClipboardType } from 'lucide-react';
+import { ClipboardType, Home, ThumbsUpIcon } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import Cookie from 'js-cookie';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import Link from 'next/link';
@@ -12,8 +13,15 @@ import { useGoogleMap } from '@react-google-maps/api';
 import InfoWindowList from '../Maps/InfoWindowList';
 import MapClickedPosition from '@/contexts/MapClickedPosition';
 
+interface events {
+  _id: string | undefined;
+  title: string | undefined;
+  quantity: number;
+}
+
 export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
+  const [relevance, setRelevance] = useState<events[]>([]);
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
   const { setMapClickedPosition } = useContext(MapClickedPosition);
@@ -21,6 +29,7 @@ export default function ViewEvent() {
   const search = useSearchParams();
   const params = useParams();
   const router = useRouter();
+  const pathname = usePathname();
 
   const maps = useGoogleMap();
 
@@ -35,6 +44,27 @@ export default function ViewEvent() {
       router.push('/');
     } else {
       setInfoWindowOpen(true);
+    }
+  };
+
+  const createRelation = async () => {
+    const token = Cookie.get('token');
+    if (token) {
+      try {
+        await api.get(`/subscribe/${params.id}`, {
+          headers: {
+            Authorization: token,
+          },
+        });
+        router.refresh();
+        alert('Evento Curtido!');
+      } catch (error) {
+        router.refresh();
+        alert('Ocorreu um erro ao curtir o evento.');
+      }
+    } else {
+      router.push('/signin');
+      alert('Você precisa estar conectado para curtir um evento.');
     }
   };
 
@@ -70,6 +100,19 @@ export default function ViewEvent() {
     }
   }, [point.lat | point.lng]);
 
+  useEffect(() => {
+    if (pathname === `/events/${params.id}`) {
+      (async () => {
+        try {
+          const response = await api.get(`/subscribed/${params.id}`);
+          setRelevance(response.data);
+        } catch (error) {
+          alert('Erro no servidor, tente novamente mais tarde.');
+        }
+      })();
+    }
+  }, [pathname]);
+
   return (
     <>
       {backgroundWindow && (
@@ -90,7 +133,14 @@ export default function ViewEvent() {
             <div className="mt-3 h-96 overflow-y-auto max-w-xl">
               <p>{`${event?.description}`}</p>
             </div>
-            <div className="mt-5 flex justify-center space-x-3">
+            <button
+              onClick={createRelation}
+              className="flex flex-col items-center mt-3 cursor-pointer text-green-600 hover:text-green-500 border-green-600 hover:border-green-500 border rounded-xl px-2 py-1 "
+            >
+              <ThumbsUpIcon />
+              <p>Curtir</p>
+            </button>
+            <div className="mt-3 flex items-center space-x-3 border-b-[.5px] border-slate-600 pb-2">
               <Link
                 href={`/events/remove/${event?._id}`}
                 className="bg-red-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-red-800 
@@ -127,6 +177,32 @@ export default function ViewEvent() {
               >
                 Voltar
               </button>
+            </div>
+            <div className="mt-3 border-b-[.5px] border-slate-600 pb-2">
+              <p className="mb-2">Quem curtiu esse também curtiu esses outros:</p>
+              {relevance.length > 0 ? (
+                <ul className="flex gap-5">
+                  {relevance.map((event) => {
+                    return (
+                      <li className="bg-sky-800 hover:bg-sky-700 p-1 px-2 rounded" key={event._id}>
+                        <a href={`/events/${event._id}`}>{event.title}</a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              ) : (
+                <p className="italic text-gray-400">Não há relevância</p>
+              )}
+            </div>
+            <div className="mt-4">
+              <a
+                href="/"
+                className="text-blue-600 hover:text-blue-700 font-bold hover:underline flex flex-col items-center"
+                style={{ textShadow: '2px 0px 2px black' }}
+              >
+                <Home />
+                Página Inicial
+              </a>
             </div>
           </div>
         </div>
