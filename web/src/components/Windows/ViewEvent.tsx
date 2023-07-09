@@ -14,8 +14,8 @@ import InfoWindowList from '../Maps/InfoWindowList';
 import MapClickedPosition from '@/contexts/MapClickedPosition';
 
 interface events {
-  _id: string | undefined;
-  title: string | undefined;
+  _id: string;
+  title: string;
   quantity: number;
 }
 
@@ -67,6 +67,10 @@ export default function ViewEvent() {
       alert('Você precisa estar conectado para curtir um evento.');
     }
   };
+
+  const nextEvent = (event: events) => {
+    router.push(`/events/${event?._id}`);
+  }
 
   useEffect(() => {
     if (params.id) {
@@ -185,7 +189,7 @@ export default function ViewEvent() {
                   {relevance.map((event) => {
                     return (
                       <li className="bg-sky-800 hover:bg-sky-700 p-1 px-2 rounded" key={event._id}>
-                        <a href={`/events/${event._id}`}>{event.title}</a>
+                        <button onClick={() => nextEvent(event)}>{event.title}</button>
                       </li>
                     );
                   })}
