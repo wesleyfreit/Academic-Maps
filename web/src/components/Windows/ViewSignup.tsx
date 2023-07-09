@@ -2,6 +2,7 @@
 
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import { api } from '@/lib/api';
+import { AxiosError } from 'axios';
 import { Contact } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -23,18 +24,26 @@ export default function ViewSignin() {
 
     if (formData.get('username') && formData.get('password')) {
       try {
-        const response = await api.post('/signup', {
+        await api.post('/signup', {
           username: formData.get('username'),
           password: formData.get('password'),
         });
-        const statusCode = response.status;
-        console.log(statusCode);
-        alert('Sua conta foi criada.');
+        alert('Sua conta foi criada, você já pode fazer login.');
         setBackgroundWindow(false);
         router.push('/');
-      } catch (error) {
-        console.log(error);
-        alert('Ocorreu um erro ao criar a conta, verifique se os dados estão corretos.');
+      } catch (error: AxiosError | any) {
+        const status = error.response.status;
+        switch (status) {
+          case 401:
+            alert('Há algo errado nos dados, verifique e tente novamente.');
+            break;
+          case 409:
+            alert('Este usuário já está cadastrado, tente outro.');
+            break;
+          default:
+            alert('Ocorreu um erro, tente novamente mais tarde.');
+            break;
+        }
       }
     } else return setIsRequired(true);
   };
@@ -81,7 +90,7 @@ export default function ViewSignin() {
                   className="bg-blue-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-blue-800 active:border-blue-400 
                   rounded-lg relative px-10 py-2 "
                 >
-                  Entrar
+                  Criar
                 </button>
                 <Link
                   href="/"

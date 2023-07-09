@@ -30,7 +30,8 @@ export default function ViewSignin() {
         });
         const token = response.data;
         router.push(`/api/auth?token=${token.token}`);
-        alert('Você está logado.');
+        router.refresh();
+        alert('Seja bem vindo de volta.');
         setBackgroundWindow(false);
       } catch (error: AxiosError | any) {
         const status = error.response.status;
