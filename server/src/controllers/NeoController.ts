@@ -1,10 +1,20 @@
-import neo4j from "neo4j-driver";
-import User from "../models/User";
 import Event from "../models/Event";
 import { Request, Response } from "express";
-import jwt, { Secret } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import driver from "../../database/neo4j";
 
+interface result {
+  _fields: Array<{
+    low: number;
+    _fields: [string];
+  }>;
+}
+
+interface events {
+  _id: string | undefined;
+  title: string | undefined;
+  quantity: number;
+}
 export class Neo {
   public async saveUser(id: number) {
     const session = driver.session();
@@ -43,7 +53,7 @@ export class Neo {
       } | null;
       if (user) {
         const result: any = await session.run(
-          "MATCH (u:User{id:$idUser}) OPTIONAL MATCH (e:Event{id:$idEvent}) CREATE (u)-[:Subscribed]->(e)",
+          "MATCH (u:User{id:$idUser}) OPTIONAL MATCH (e:Event{id:$idEvent}) MERGE (u)-[:Subscribed]->(e)",
           {
             idUser: user.id,
             idEvent: id,
@@ -65,12 +75,23 @@ export class Neo {
     const session = driver.session();
     try {
       const result: any = await session.run(
-        "MATCH (e1:Event)<-[:Subscribed]-(u:User)-[s:Subscribed]->(e2:Event) WHERE e1.id = $idEvent RETURN e2.id as events, count(e2) as quantity ORDER BY quantity desc",
+        "MATCH (e1:Event)<-[:Subscribed]-(u:User)-[s:Subscribed]->(e2:Event) WHERE e1.id = $idEvent RETURN e2.id as events, count(e2) as quantity ORDER BY quantity desc LIMIT 3",
         {
           idEvent: id,
-        }
+        },
       );
-      return res.json(result.records);
+      const events: events[] = [];
+      await Promise.all(
+        result.records.map(async (e: result) => {
+          const event = await Event.findById(e._fields[0]);
+          events.push({
+            _id: event?.id,
+            title: event?.title,
+            quantity: e._fields[1].low,
+          });
+        }),
+      );
+      return res.json(events);
     } catch (error) {
       console.log(error);
       res.sendStatus(500);
