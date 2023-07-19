@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import { Neo } from "./NeoController";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import { Request, Response } from 'express';
+import User from '../models/User';
+import { Neo } from './NeoController';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 dotenv.config();
 
 const neo = new Neo();
@@ -18,7 +18,7 @@ export class UserController {
     const { username, password } = <iUser>req.body;
     try {
       const usernameCheck = await User.findOne({ username }).collation({
-        locale: "pt",
+        locale: 'pt',
         strength: 2,
       });
       if (usernameCheck) {
@@ -40,13 +40,15 @@ export class UserController {
     try {
       if (username) {
         const user = await User.findOne({ username }).collation({
-          locale: "pt",
+          locale: 'pt',
           strength: 2,
         });
         if (user) {
           const check = await bcrypt.compare(password, user.password as string);
           if (check) {
-            const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {expiresIn: 3600});
+            const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
+              expiresIn: 3600,
+            });
             const tokenBearer = `Bearer ${token}`;
             return res.json({ token: tokenBearer });
           } else {

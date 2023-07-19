@@ -1,4 +1,4 @@
-import mongoose from "../../database/database";
+import mongoose from '../../database/database';
 
 const eventSchema = new mongoose.Schema(
   {
@@ -11,14 +11,14 @@ const eventSchema = new mongoose.Schema(
       coordinates: { type: Array },
     },
   },
-  { collection: "events" }
+  { collection: 'events' },
 );
 
 eventSchema.index(
-  { title: "text", description: "text" },
-  { default_language: "pt", weights: { title: 2, description: 1 } }
+  { title: 'text', description: 'text' },
+  { default_language: 'pt', weights: { title: 2, description: 1 } },
 );
 
-const Event = mongoose.model("Event", eventSchema);
+const Event = mongoose.model('Event', eventSchema);
 
 export default Event;
