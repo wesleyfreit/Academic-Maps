@@ -9,6 +9,8 @@ const eventController = new EventController();
 const userController = new UserController();
 const neo = new Neo();
 
+router.get('/', (req, res) => res.redirect('/events'))
+
 router.get('/events', eventController.listEvents);
 router.get('/events/:id', eventController.findEvent);
 router.post('/events', eventController.saveEvent);

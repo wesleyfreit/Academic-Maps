@@ -66,10 +66,8 @@ export class EventController {
     if (body.title != '' && body.point.coordinates[1] && body.point.coordinates[0]) {
       try {
         const result = await Event.findOneAndUpdate({ _id: id }, { ...body });
-        if (result) {
-          await Event.findById(id);
-          return res.sendStatus(200);
-        } else return res.sendStatus(400);
+        if (result) return res.sendStatus(200);
+        else return res.sendStatus(400);
       } catch (error) {
         return res.sendStatus(404);
       }

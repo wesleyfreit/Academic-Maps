@@ -1,13 +1,23 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-const mongoDBUri = process.env.MONGODB_URI as string;
+class MongoDB {
+  private mongodbURI;
 
-main().catch((err) => console.log(err));
+  constructor() {
+    this.mongodbURI = process.env.MONGODB_URI as string;
+  }
 
-async function main() {
-  await mongoose.connect(mongoDBUri);
+  public async connect() {
+    try {
+      await mongoose.connect(this.mongodbURI);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 }
 
+new MongoDB().connect();
 export default mongoose;
