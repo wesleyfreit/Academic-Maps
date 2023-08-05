@@ -4,7 +4,6 @@ import { Event } from '@/configs/Interfaces';
 import { ClipboardType, Home, ThumbsUpIcon } from 'lucide-react';
 import React, { useContext, useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-import Cookie from 'js-cookie';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { api } from '@/lib/api';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
@@ -48,24 +47,24 @@ export default function ViewEvent() {
   };
 
   const createRelation = async () => {
-    const token = Cookie.get('token');
-    if (token) {
-      try {
-        await api.get(`/subscribe/${params.id}`, {
-          headers: {
-            Authorization: token,
-          },
-        });
-        router.refresh();
-        alert('Evento Curtido!');
-      } catch (error) {
-        router.refresh();
-        alert('Ocorreu um erro ao curtir o evento.');
-      }
-    } else {
-      router.push('/signin');
-      alert('Você precisa estar conectado para curtir um evento.');
-    }
+    // const token = Cookie.get('token');
+    // if (token) {
+    //   try {
+    //     await api.get(`/subscribe/${params.id}`, {
+    //       headers: {
+    //         Authorization: token,
+    //       },
+    //     });
+    //     router.refresh();
+    //     alert('Evento Curtido!');
+    //   } catch (error) {
+    //     router.refresh();
+    //     alert('Ocorreu um erro ao curtir o evento.');
+    //   }
+    // } else {
+    //   router.push('/signin');
+    //   alert('Você precisa estar conectado para curtir um evento.');
+    // }
   };
 
   const nextEvent = (event: events) => {
