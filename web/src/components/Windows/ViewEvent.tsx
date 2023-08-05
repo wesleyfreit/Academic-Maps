@@ -70,16 +70,16 @@ export default function ViewEvent() {
 
   const nextEvent = (event: events) => {
     router.push(`/events/${event?._id}`);
-  }
+  };
 
   useEffect(() => {
     if (params.id) {
+      setBackgroundWindow(true);
       (async () => {
         try {
           const response = await api.get(`/events/${params.id}`);
           if (response) {
             setEvent(response.data);
-            setBackgroundWindow(true);
           }
         } catch (error) {
           router.push('/');
@@ -119,23 +119,31 @@ export default function ViewEvent() {
 
   return (
     <>
-      {backgroundWindow && (
+      {!event && backgroundWindow && (
+        <div
+          className="z-[2] absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] p-10 border-gray-800 border bg-gray-900 text-center rounded-xl 
+          shadow-gray-950 shadow-lg drop-shadow-2xl w-screen max-w-xs"
+        >
+          Aguarde um momento....
+        </div>
+      )}
+      {backgroundWindow && event && (
         <div
           className="z-[2] absolute left-[50%] top-[50%] transform translate-x-[-50%] translate-y-[-50%] p-10 border-gray-800 border bg-gray-900 text-center rounded-xl 
           shadow-gray-950 shadow-lg drop-shadow-2xl w-screen max-w-2xl"
         >
           <h1 className="uppercase font-alt text-xl font-bold flex justify-center">
-            <ClipboardType className="text-blue-700 mr-2" /> {event?.title}
+            <ClipboardType className="text-blue-700 mr-2" /> {event.title}
           </h1>
           <div className="mt-5 flex flex-col overflow-y-auto items-center">
             <div className="flex space-x-2">
               <p className="font-bold">Data:</p>
-              <p>{`${dayjs(event?.startDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
+              <p>{`${dayjs(event.startDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
               <p>~</p>
-              <p>{`${dayjs(event?.endDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
+              <p>{`${dayjs(event.endDate).utc().format('DD[/]MM[/]YYYY')}`}</p>
             </div>
             <div className="mt-3 h-96 overflow-y-auto max-w-xl">
-              <p>{`${event?.description}`}</p>
+              <p>{`${event.description}`}</p>
             </div>
             <button
               onClick={createRelation}
@@ -146,14 +154,14 @@ export default function ViewEvent() {
             </button>
             <div className="mt-3 flex items-center space-x-3 border-b-[.5px] border-slate-600 pb-2">
               <Link
-                href={`/events/remove/${event?._id}`}
+                href={`/events/remove/${event._id}`}
                 className="bg-red-700 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-red-800 
               active:border-red-400 rounded-lg relative px-10 py-2 "
               >
                 Remover
               </Link>
               <Link
-                href={`/events/update/${event?._id}`}
+                href={`/events/update/${event._id}`}
                 onClick={() => setMapClickedPosition(undefined)}
                 className="bg-yellow-600 border border-transparent outline-none shadow-gray-950 shadow-sm hover:bg-yellow-700 
               active:border-yellow-400 rounded-lg relative px-10 py-2"
@@ -161,7 +169,7 @@ export default function ViewEvent() {
                 Editar
               </Link>
               <Link
-                href={`/events/${event?._id}/?lat=${event?.point.coordinates[1]}&lng=${event?.point.coordinates[0]}`}
+                href={`/events/${event._id}/?lat=${event.point.coordinates[1]}&lng=${event.point.coordinates[0]}`}
                 onClick={() => {
                   setBackgroundWindow(false);
                   setMapClickedPosition(undefined);

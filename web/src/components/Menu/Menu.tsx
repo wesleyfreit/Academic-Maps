@@ -39,6 +39,14 @@ export default function Menu() {
     }
   }, [pathname]);
 
+  const map = document.getElementById('map');
+  const loading = document.getElementById('loading');
+
+  if (eventsList.length > 0 && map && loading) {
+    map.style.display = 'flex';
+    loading.style.display = 'none';
+  }
+
   return (
     <>
       <div
