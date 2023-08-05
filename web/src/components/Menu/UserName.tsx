@@ -3,10 +3,7 @@
 import { User } from 'lucide-react';
 import { useState } from 'react';
 
-const buttonUser = `bg-gray-500 mt-2 shadow-black shadow-sm ml-16 fixed flex w-12 h-12 hover:bg-gray-400 rounded-lg cursor-pointer items-center 
-  justify-center duration-700 transform transition-all flex-col`;
-
-export default function UserName(props: { username: string }) {
+export default function UserName(props: { username: string | undefined }) {
   const [click, setClick] = useState(false);
   const { username } = props;
   return (

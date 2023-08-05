@@ -1,7 +1,7 @@
 'use client';
 
+import { AuthContext } from '@/contexts/Authentication';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
-import { api } from '@/lib/api';
 import { AxiosError } from 'axios';
 import { Contact } from 'lucide-react';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ export default function ViewSignin() {
   const router = useRouter();
 
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
+  const { signIn } = useContext(AuthContext);
   const [isRequired, setIsRequired] = useState(false);
 
   useEffect(() => {
@@ -23,18 +24,14 @@ export default function ViewSignin() {
     const formData = new FormData(event.currentTarget);
 
     if (formData.get('username') && formData.get('password')) {
+      const username = formData.get('username') as string;
+      const password = formData.get('password') as string;
+
       try {
-        const response = await api.post('/signin', {
-          username: formData.get('username'),
-          password: formData.get('password'),
-        });
-        const token = response.data;
-        router.push(`/api/auth?token=${token.token}`);
-        router.refresh();
+        await signIn({ username, password });
         alert('Seja bem vindo de volta.');
-        setBackgroundWindow(false);
       } catch (error: AxiosError | any) {
-        const status = error.response.status;
+        const status = error.response?.status;
         switch (status) {
           case 401:
             alert('O usuário ou senha podem estar incorretos, verifique e tente novamente.');
@@ -50,6 +47,9 @@ export default function ViewSignin() {
             break;
         }
       }
+
+      router.refresh();
+      setBackgroundWindow(false);
     } else return setIsRequired(true);
   };
   return (

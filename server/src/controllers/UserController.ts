@@ -52,7 +52,7 @@ export class UserController {
             const control = new UserController();
             await control.checkUsers(); //validar os usuários no banco neo4j
             const tokenBearer = `Bearer ${token}`;
-            return res.json({ token: tokenBearer });
+            return res.json({ token: tokenBearer, user: {username: user.username} });
           } else {
             return res.sendStatus(401);
           }
@@ -63,6 +63,10 @@ export class UserController {
     } catch (error) {
       return res.sendStatus(500);
     }
+  }
+
+  public async getUser(req: Request, res: Response){
+
   }
 
   public async checkUsers() {

@@ -12,6 +12,7 @@ import { cookies } from 'next/headers';
 import Menu from '@/components/Menu/Menu';
 import Profile from '@/components/Menu/Profile';
 import Signin from '@/components/Menu/Signin';
+import { AuthProvider } from '@/contexts/Authentication';
 
 const roboto = Roboto({
   subsets: ['latin'],
@@ -30,7 +31,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
-  const isAuthenticated = cookies().has('token');
+  const isAuthenticated = cookies().has('academic_maps.auth');
   return (
     <html lang="pt-br">
       <body
@@ -44,13 +45,15 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <main>
           <BackgroundProvider>
             <ClickMarkerProvider>
-              <GoogleMaps>
-                <SearchBar />
-                {isAuthenticated ? <Profile /> : <Signin />}
-                <Menu />
-                <UserLocation />
-                {children}
-              </GoogleMaps>
+              <AuthProvider>
+                <GoogleMaps>
+                  <SearchBar />
+                  {isAuthenticated ? <Profile /> : <Signin />}
+                  <Menu />
+                  <UserLocation />
+                  {children}
+                </GoogleMaps>
+              </AuthProvider>
             </ClickMarkerProvider>
           </BackgroundProvider>
         </main>
