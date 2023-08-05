@@ -37,10 +37,10 @@ export default function ViewSignin() {
         const status = error.response.status;
         switch (status) {
           case 401:
-            alert('Existe uma divergência nos dados, verifique e tente novamente.');
+            alert('O usuário ou senha podem estar incorretos, verifique e tente novamente.');
             break;
           case 404:
-            alert('Parece que a conta que deseja iniciar sessão não existe.');
+            alert('Parece que essa conta não existe.');
             break;
           case 500:
             alert('Ocorreu um erro no servidor, tente novamente mais tarde.');
