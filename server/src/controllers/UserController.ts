@@ -49,6 +49,8 @@ export class UserController {
             const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
               expiresIn: 3600,
             });
+            const control = new UserController();
+            await control.checkUsers(); //validar os usuários no banco neo4j
             const tokenBearer = `Bearer ${token}`;
             return res.json({ token: tokenBearer });
           } else {
@@ -60,6 +62,18 @@ export class UserController {
       }
     } catch (error) {
       return res.sendStatus(500);
+    }
+  }
+
+  public async checkUsers() {
+    const users = await User.find({}, { _id: true, __v: false });
+    if (users.length > 0) {
+      users.forEach(async (user) => {
+        const exists = await neo.findUser(user.id);
+        if (exists != 1) {
+          await neo.saveUser(user.id);
+        }
+      });
     }
   }
 }

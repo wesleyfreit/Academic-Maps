@@ -19,7 +19,7 @@ export class Neo {
   public async saveUser(id: number) {
     const session = driver.session();
     try {
-      const result: any = await session.run('CREATE (:User{id:$id})', { id });
+      const result: any = await session.run('MERGE (:User{id:$id})', { id });
       console.log(result.summary.counters._stats?.nodesCreated);
     } catch (error) {
       console.log(error);
@@ -31,8 +31,32 @@ export class Neo {
   public async saveEvent(id: number) {
     const session = driver.session();
     try {
-      const result: any = await session.run('CREATE (:Event{id:$id})', { id });
+      const result: any = await session.run('MERGE (:Event{id:$id})', { id });
       console.log(result.summary.counters._stats.nodesCreated);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await session.close();
+    }
+  }
+
+  public async findEvent(id: number) {
+    const session = driver.session();
+    try {
+      const result: any = await session.run('MATCH (n:Event{id:$id}) RETURN n', { id });
+      return result.records.length;
+    } catch (error) {
+      console.log(error);
+    } finally {
+      await session.close();
+    }
+  }
+
+  public async findUser(id: number) {
+    const session = driver.session();
+    try {
+      const result: any = await session.run('MATCH (n:User{id:$id}) RETURN n', { id });
+      return result.records.length;
     } catch (error) {
       console.log(error);
     } finally {

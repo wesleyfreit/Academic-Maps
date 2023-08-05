@@ -43,8 +43,15 @@ export class EventController {
       const events = await Event.find({}, { _id: true, __v: false }).sort({
         startDate: -1,
       });
-      if (events.length > 0) return res.json(events);
-      else return res.sendStatus(204);
+      if (events.length > 0) {
+        events.forEach(async (event) => {
+          const exists = await neo.findEvent(event.id);
+          if (exists != 1) {
+            await neo.saveEvent(event.id);
+          }
+        });
+        return res.json(events);
+      } else return res.sendStatus(204);
     } catch (error) {
       return res.sendStatus(404);
     }
