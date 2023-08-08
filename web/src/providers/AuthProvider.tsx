@@ -3,7 +3,8 @@
 import { AuthContext, SigninData, User } from '@/contexts/Auth';
 import { api } from '@/lib/api';
 import { ReactNode, useEffect, useState } from 'react';
-import { setCookie, destroyCookie, parseCookies } from 'nookies';
+import { setCookie, destroyCookie } from 'nookies';
+import { AxiosError } from 'axios';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -11,17 +12,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAuthenticated = !!user;
 
   useEffect(() => {
-    const { 'academic_maps.auth': token } = parseCookies();
-    if (token) {
-      (async () => {
-        const response = await api.get('/user', {
-          headers: {
-            Authorization: token,
-          },
-        });
+    (async () => {
+      try {
+        const response = await api.get('/user');
         setUser(response.data);
-      })();
-    }
+      } catch (error: AxiosError | any) {
+        const status = error.response?.status;
+        switch (status) {
+          case 403:
+            setUser(null);
+            break;
+          case 500:
+            alert('Ocorreu um erro no servidor, tente novamente mais tarde.');
+            break;
+          default:
+            alert('Ocorreu um erro, tente novamente mais tarde.');
+            break;
+        }
+      }
+    })();
   }, []);
 
   async function signIn({ username, password }: SigninData) {
@@ -30,15 +39,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       password,
     });
 
-    const data = response.data;
+    const { token, user } = response.data;
 
-    setCookie(undefined, 'academic_maps.auth', data.token, {
+    setCookie(undefined, 'academic_maps.auth', token, {
       secure: true,
       maxAge: 60 * 60 * 24, //1 day
       path: '/',
     });
 
-    setUser(data.user);
+    setUser(user);
   }
 
   function signOut() {

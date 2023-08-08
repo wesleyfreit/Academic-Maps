@@ -50,29 +50,30 @@ export default function ViewEvent() {
   };
 
   const createRelation = async () => {
-    // const token = Cookie.get('token');
-    // if (token) {
-    //   try {
-    //     await api.get(`/subscribe/${params.id}`, {
-    //       headers: {
-    //         Authorization: token,
-    //       },
-    //     });
-    //     router.refresh();
-    //     alert('Evento Curtido!');
-    //   } catch (error) {
-    //     router.refresh();
-    //     alert('Ocorreu um erro ao curtir o evento.');
-    //   }
-    // } else {
-    //   router.push('/signin');
-    //   alert('Você precisa estar conectado para curtir um evento.');
-    // }
+    if (isAuthenticated) {
+      
+      try {
+        await api.get(`/subscribe/${params.id}`);
+        router.refresh();
+        alert('Evento Curtido!');
+      } catch (error) {
+        router.refresh();
+        alert('Ocorreu um erro ao curtir o evento.');
+      }
+    } else {
+      router.push('/signin');
+      alert('Você precisa estar conectado para curtir um evento.');
+    }
   };
 
   const nextEvent = (event: events) => {
     router.push(`/events/${event?._id}`);
   };
+
+  const handleHomePage = () => {
+    router.push('/');
+    setBackgroundWindow(false);
+  }
 
   useEffect(() => {
     if (params.id) {
@@ -84,6 +85,7 @@ export default function ViewEvent() {
             setEvent(response.data);
           }
         } catch (error) {
+          setBackgroundWindow(false);
           router.push('/');
         }
       })();
@@ -209,14 +211,14 @@ export default function ViewEvent() {
               )}
             </div>
             <div className="mt-4">
-              <a
-                href="/"
+              <button
                 className="text-blue-600 hover:text-blue-700 font-bold hover:underline flex flex-col items-center"
                 style={{ textShadow: '2px 0px 2px black' }}
+                onClick={handleHomePage}
               >
                 <Home />
                 Página Inicial
-              </a>
+              </button>
             </div>
           </div>
         </div>

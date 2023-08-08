@@ -20,7 +20,7 @@ const neo = new Neo();
 router.get('/', (req, res) => res.redirect('/events'));
 
 router.get('/events', eventController.listEvents);
-router.get('/events/:id', userAuth, eventController.findEvent);
+router.get('/events/:id', eventController.findEvent);
 router.post('/events', userAuth, eventController.saveEvent);
 router.put('/events/:id', userAuth, eventController.updateEvent);
 router.delete('/events/:id', userAuth, eventController.deleteEvent);
@@ -30,6 +30,6 @@ router.post('/signin', userController.singIn);
 router.get('/user', userAuth, userController.getUser);
 
 router.get('/subscribe/:id', userAuth, neo.subscribe);
-router.get('/subscribed/:id', userAuth, neo.findSubscribeds);
+router.get('/subscribed/:id', neo.findSubscribeds);
 
 export default router;
