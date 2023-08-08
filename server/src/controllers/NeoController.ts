@@ -15,6 +15,7 @@ interface events {
   title: string | undefined;
   quantity: number;
 }
+
 export class Neo {
   public async saveUser(id: number) {
     const session = driver.session();
@@ -115,7 +116,6 @@ export class Neo {
           });
         }),
       );
-      console.log(events);
       return res.json(events);
     } catch (error) {
       console.log(error);

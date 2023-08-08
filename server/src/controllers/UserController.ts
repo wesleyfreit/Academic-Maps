@@ -46,13 +46,13 @@ export class UserController {
         if (user) {
           const check = await bcrypt.compare(password, user.password as string);
           if (check) {
-            const token = jwt.sign({ id: user.id, username: user.username }, jwtSecret, {
+            const token = jwt.sign({ id: user.id }, jwtSecret, {
               expiresIn: 3600,
             });
             const control = new UserController();
             await control.checkUsers(); //validar os usuários no banco neo4j
             const tokenBearer = `Bearer ${token}`;
-            return res.json({ token: tokenBearer, user: {username: user.username} });
+            return res.json({ token: tokenBearer, user: { username: user.username } });
           } else {
             return res.sendStatus(401);
           }
@@ -65,8 +65,15 @@ export class UserController {
     }
   }
 
-  public async getUser(req: Request, res: Response){
-
+  public async getUser(req: Request, res: Response) {
+    try {
+      const id = req.id;
+      const user = await User.findById(id);
+      if (user) {
+        return res.json({ username: user.username });
+      } else return res.sendStatus(404);
+    } catch (error) {}
+    return res.sendStatus(500);
   }
 
   public async checkUsers() {
