@@ -1,6 +1,6 @@
 'use client';
 
-import { AuthContext } from '@/contexts/Authentication';
+import { AuthContext } from '@/contexts/Auth';
 import BackgroundWindow from '@/contexts/BackgroundWindow';
 import { AxiosError } from 'axios';
 import { Contact } from 'lucide-react';

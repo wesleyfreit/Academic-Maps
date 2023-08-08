@@ -83,7 +83,8 @@ const mapOptions = {
   ],
   backgroundColor: '#000',
   fullscreenControl: false,
-  mapTypeControl: true,
+  mapTypeControl: false,
+  streetViewControl: false,
   controlSize: 30,
   disableDoubleClickZoom: true,
 };

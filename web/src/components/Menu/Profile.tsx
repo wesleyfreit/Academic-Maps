@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import Logout from './Logout';
+import Logout from './Signout';
 import UserName from './UserName';
 import { useContext } from 'react';
-import { AuthContext } from '@/contexts/Authentication';
+import { AuthContext } from '@/contexts/Auth';
 
 const buttonProps = `bg-gray-500 mt-2 shadow-black shadow-sm ml-16 fixed flex w-12 h-12 hover:bg-gray-400 rounded-lg cursor-pointer items-center 
   justify-center duration-700 transform transition-all flex-col`;

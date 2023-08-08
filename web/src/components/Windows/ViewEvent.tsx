@@ -11,6 +11,8 @@ import Link from 'next/link';
 import { useGoogleMap } from '@react-google-maps/api';
 import InfoWindowList from '../Maps/InfoWindowList';
 import MapClickedPosition from '@/contexts/MapClickedPosition';
+import { AuthContext } from '@/contexts/Auth';
+import { parseCookies } from 'nookies';
 
 interface events {
   _id: string;
@@ -22,6 +24,7 @@ export default function ViewEvent() {
   const [event, setEvent] = useState<Event>();
   const [relevance, setRelevance] = useState<events[]>([]);
   const { backgroundWindow, setBackgroundWindow } = useContext(BackgroundWindow);
+  const { isAuthenticated } = useContext(AuthContext);
   const [infoWindowOpen, setInfoWindowOpen] = useState(false);
   const { setMapClickedPosition } = useContext(MapClickedPosition);
 

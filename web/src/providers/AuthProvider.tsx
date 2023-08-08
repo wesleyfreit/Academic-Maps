@@ -1,26 +1,9 @@
 'use client';
 
+import { AuthContext, SigninData, User } from '@/contexts/Auth';
 import { api } from '@/lib/api';
-import { ReactNode, createContext, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { setCookie, destroyCookie, parseCookies } from 'nookies';
-
-type User = {
-  username: string;
-};
-
-type SigninData = {
-  username: string;
-  password: string;
-};
-
-type AuthContextType = {
-  user: User | null;
-  isAuthenticated: boolean;
-  signIn: (data: SigninData) => Promise<void>;
-  signOut: () => void;
-};
-
-export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -29,10 +12,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const { 'academic_maps.auth': token } = parseCookies();
-    if(token){
-      
+    if (token) {
+      (async () => {
+        const response = await api.get('/user', {
+          headers: {
+            Authorization: token,
+          },
+        });
+        setUser(response.data);
+      })();
     }
-  }, [])
+  }, []);
 
   async function signIn({ username, password }: SigninData) {
     const response = await api.post('/signin', {

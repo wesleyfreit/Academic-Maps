@@ -12,7 +12,7 @@ import { cookies } from 'next/headers';
 import Menu from '@/components/Menu/Menu';
 import Profile from '@/components/Menu/Profile';
 import Signin from '@/components/Menu/Signin';
-import { AuthProvider } from '@/contexts/Authentication';
+import { AuthProvider } from '@/providers/AuthProvider';
 
 const roboto = Roboto({
   subsets: ['latin'],
