@@ -34,7 +34,7 @@ export class UserController {
     }
   }
 
-  public async singIn(req: Request, res: Response) {
+  public singIn = async (req: Request, res: Response) => {
     const { username, password } = <iUser>req.body;
     const jwtSecret = process.env.JWTSECRET as string;
     try {
@@ -49,8 +49,7 @@ export class UserController {
             const token = jwt.sign({ id: user.id }, jwtSecret, {
               expiresIn: 3600,
             });
-            const control = new UserController();
-            await control.checkUsers(); //validar os usuários no banco neo4j
+            await this.checkUsers(); //validar os usuários no banco neo4j
             const tokenBearer = `Bearer ${token}`;
             return res.json({ token: tokenBearer, user: { username: user.username } });
           } else {
@@ -63,7 +62,7 @@ export class UserController {
     } catch (error) {
       return res.sendStatus(500);
     }
-  }
+  };
 
   public async getUser(req: Request, res: Response) {
     try {
@@ -72,11 +71,12 @@ export class UserController {
       if (user) {
         return res.json({ username: user.username });
       } else return res.sendStatus(404);
-    } catch (error) {}
-    return res.sendStatus(500);
+    } catch (error) {
+      return res.sendStatus(500);
+    }
   }
 
-  public async checkUsers() {
+  public checkUsers = async () => {
     const users = await User.find({}, { _id: true, __v: false });
     if (users.length > 0) {
       users.forEach(async (user) => {
@@ -86,5 +86,5 @@ export class UserController {
         }
       });
     }
-  }
+  };
 }
