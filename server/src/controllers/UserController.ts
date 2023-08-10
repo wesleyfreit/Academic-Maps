@@ -47,7 +47,7 @@ export class UserController {
           const check = await bcrypt.compare(password, user.password as string);
           if (check) {
             const token = jwt.sign({ id: user.id }, jwtSecret, {
-              expiresIn: 3600,
+              expiresIn: 60 * 60 * 2, //2h
             });
             await this.checkUsers(); //validar os usuários no banco neo4j
             const tokenBearer = `Bearer ${token}`;

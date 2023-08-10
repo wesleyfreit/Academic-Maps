@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     setCookie(undefined, 'academic_maps.auth', token, {
       secure: true,
-      maxAge: 60 * 60 * 24, //1 day
+      maxAge: 60 * 60 * 2, //2h
       path: '/',
     });
 
